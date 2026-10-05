@@ -214,15 +214,25 @@
 
   <!-- 8 · Letter -->
   <section class="scene" data-scene="letter">
+    <div class="night" aria-hidden="true"><canvas id="lanterns"></canvas><span class="moon"></span></div>
     <p class="whisper">A little note from</p>
     <h2 class="title script-title">Your Alien</h2>
     <div class="envelope" id="envelope">
       <button class="env-hit" id="envOpen" aria-label="Open the letter"></button>
       <div class="env-back"></div>
       <div class="letter" id="letter">
-        <div class="letter-scroll" id="letterScroll">
+        <div class="letter-inner">
           <p class="letter-date">8 November 2026</p>
-          <div class="letter-body guj" id="letterBody"></div>
+          <div class="letter-page guj" id="letterPage" aria-live="polite"></div>
+          <div class="letter-nav">
+            <button class="lnav" id="letterPrev" aria-label="Previous page">
+              <svg viewBox="0 0 24 24" width="18" height="18"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <span class="letter-count" id="letterCount"></span>
+            <button class="lnav" id="letterNextPg" aria-label="Next page">
+              <svg viewBox="0 0 24 24" width="18" height="18"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
         </div>
       </div>
       <div class="env-front"></div>
@@ -231,7 +241,6 @@
     </div>
     <p class="hint" id="letterHint">Tap the seal, bestie</p>
     <div class="row">
-      <button class="btn ghost" id="letterSkip" hidden>Show the whole letter</button>
       <button class="btn" id="letterNext" hidden>Continue</button>
     </div>
   </section>
