@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>기쁨 생일 기록 · For Khushali</title>
+<meta name="description" content="A little surprise for Khushali's 22nd birthday.">
+<meta name="theme-color" content="#4a0912">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎁</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Pinyon+Script&family=Noto+Serif+Gujarati:wght@400;600&family=Noto+Serif+Devanagari:wght@500&family=Nanum+Pen+Script&family=Caveat:wght@500;700&family=Cinzel:wght@500;700&family=Special+Elite&family=Playfair+Display:ital,wght@1,500;1,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600&text=%EA%B8%B0%EC%81%A8%EC%83%9D%EC%9D%BC%EA%B8%B0%EB%A1%9D&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<canvas id="sky" aria-hidden="true"></canvas>
+<canvas id="confetti" aria-hidden="true"></canvas>
+
+<header class="chrome">
+  <button class="icon-btn" id="backBtn" aria-label="Go back" hidden>
+    <svg viewBox="0 0 24 24" width="20" height="20"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <button class="icon-btn" id="musicBtn" aria-label="Pause music" hidden>
+    <svg class="on" viewBox="0 0 24 24" width="20" height="20"><path d="M9 18V5l11-2v13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6" cy="18" r="3" fill="currentColor"/><circle cx="17" cy="16" r="3" fill="currentColor"/></svg>
+    <svg class="off" viewBox="0 0 24 24" width="20" height="20"><path d="M4 4l16 16M9 9v9M9 5l11-2v10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="6" cy="18" r="3" fill="currentColor"/></svg>
+  </button>
+</header>
+
+<main id="stage">
+
+  <!-- 0 · Prelude -->
+  <section class="scene is-active" data-scene="prelude">
+    <button class="prelude" id="prelude" aria-label="Begin">
+      <span class="prelude-line" lang="hi">कुछ लोग ज़िन्दगी में अनजाने बनकर आते हैं,</span>
+      <span class="prelude-line" lang="hi">और फिर अपनी सादगी से जान बन जाते हैं।</span>
+      <span class="prelude-for">For Khushali</span>
+      <span class="prelude-tap">Tap anywhere to begin 👽</span>
+    </button>
+  </section>
+
+  <!-- 1 · Gift intro -->
+  <section class="scene" data-scene="intro">
+    <div class="intro-text">
+      <p class="whisper" id="introWhisper">From your favourite Alien 👽</p>
+      <h1 class="headline" id="introHeadline">
+        <span class="headline-small">Happy 22nd Birthday</span>
+        <span class="script-name">Khushali</span>
+      </h1>
+    </div>
+    <button class="gift" id="introGift" aria-label="Open the gift">
+      <span class="gift-glow"></span>
+      <span class="gift-rays"></span>
+      <span class="gift-lid"><span class="gift-bow"></span></span>
+      <span class="gift-box"><span class="gift-tag">K</span></span>
+    </button>
+    <figure class="reveal" id="introReveal" aria-hidden="true">
+      <span class="reveal-tape"></span>
+      <img src="images/reveal-22.jpg" alt="Khushali, birthday girl, 22">
+    </figure>
+    <p class="hint" id="introHint">Open it, Khushali</p>
+    <button class="btn" id="introNext" hidden>Start the surprise</button>
+  </section>
+
+  <!-- 2 · Balloons -->
+  <section class="scene" data-scene="balloons">
+    <h2 class="title">Pop all 4 balloons</h2>
+    <div class="balloons" id="balloons"></div>
+    <p class="hint" id="balloonHint">Pick a balloon and pop it</p>
+    <button class="btn" id="balloonNext" hidden>Continue</button>
+  </section>
+
+  <!-- 3 · Cake -->
+  <section class="scene" data-scene="cake">
+    <h2 class="title" id="cakeTitle">Close your eyes, make a wish…</h2>
+    <div class="cake" id="cake">
+      <div class="candles">
+        <button class="candle" aria-label="Blow out candle 1"><span class="flame"></span><span class="smoke"></span></button>
+        <button class="candle" aria-label="Blow out candle 2"><span class="flame"></span><span class="smoke"></span></button>
+        <button class="candle" aria-label="Blow out candle 3"><span class="flame"></span><span class="smoke"></span></button>
+      </div>
+      <div class="tier tier-top"><span class="drip"></span><span class="cake-age">22</span></div>
+      <div class="tier tier-bottom"><span class="drip"></span><span class="pearls"></span></div>
+      <div class="plate"></div>
+    </div>
+    <p class="hint" id="cakeHint">…then tap each candle to blow it out</p>
+    <button class="btn" id="cakeNext" hidden>Continue</button>
+  </section>
+
+  <!-- 4 · Our story, as a movie -->
+  <section class="scene" data-scene="story">
+    <p class="whisper">Now playing: the story of us</p>
+    <div class="cinema" id="cinema" role="region" aria-label="Our story">
+      <div class="cine-blur" id="cineBlur"></div>
+      <div class="cine-bg"><img id="cineImgA" alt=""><img id="cineImgB" alt=""></div>
+      <div class="cine-shade"></div>
+      <div class="cine-content">
+        <p class="cine-label" id="cineLabel"></p>
+        <h3 class="cine-title" id="cineTitle"></h3>
+        <div class="cine-lines" id="cineLines" aria-live="polite"></div>
+      </div>
+      <span class="cine-bar top"></span><span class="cine-bar bottom"></span>
+      <p class="cine-tap" id="cineTap">tap to skip ahead</p>
+    </div>
+    <div class="pager">
+      <button class="round-btn" id="storyPrev" aria-label="Previous scene">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="dots" id="storyDots"></div>
+      <button class="round-btn" id="storyNextCh" aria-label="Next scene">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    <button class="btn" id="storyNext" hidden>Continue</button>
+  </section>
+
+  <!-- 4b · Bestie license -->
+  <section class="scene" data-scene="license">
+    <h2 class="title">Some official paperwork</h2>
+    <p class="hint" id="licenseHint">Tap the card to stamp it</p>
+    <button class="license" id="license" aria-label="Stamp the best friend license">
+      <span class="tape tape-l" aria-hidden="true"></span>
+      <div class="lic-head">
+        <span class="lic-org">Ministry of Friendship 👽</span>
+        <span class="lic-type">Best Friend License</span>
+      </div>
+      <div class="lic-body">
+        <figure class="lic-photo"><img src="images/col5.jpg" alt=""></figure>
+        <dl>
+          <div><dt>Name</dt><dd>Khushali</dd></div>
+          <div><dt>Best friend of</dt><dd>Dati, the Alien</dd></div>
+          <div><dt>Valid since</dt><dd>12th board days</dd></div>
+          <div><dt>Valid till</dt><dd>Forever</dd></div>
+          <div><dt>Fights recorded</dt><dd>0</dd></div>
+          <div><dt>Superpower</dt><dd>Fake-smile detector</dd></div>
+        </dl>
+      </div>
+      <div class="lic-sign"><span class="sig">Dati</span><small>Issuing Alien</small></div>
+      <span class="stamp" aria-hidden="true">Approved<br>forever</span>
+    </button>
+    <button class="btn" id="licenseNext" hidden>Continue</button>
+  </section>
+
+  <!-- 5 · Voice / song -->
+  <section class="scene" data-scene="voice">
+    <p class="whisper">Headphones on, Khushali. No skipping.</p>
+    <h2 class="title" id="voiceTitle">A voice note from your favourite Alien</h2>
+    <div class="player">
+      <div class="player-head">
+        <span class="mic" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22"><rect x="9" y="2" width="6" height="12" rx="3" fill="currentColor"/><path d="M5 11a7 7 0 0014 0M12 18v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </span>
+        <div>
+          <p class="player-label" id="voiceLabel">A voice note, just for you</p>
+          <p class="player-sub" id="voiceSub">Recorded in one take, obviously</p>
+        </div>
+      </div>
+      <div class="wave" id="wave" aria-hidden="true"></div>
+      <div class="player-bar"><span id="voiceProgress"></span></div>
+      <div class="player-time"><span id="voiceCur">0:00</span><span id="voiceDur">0:00</span></div>
+      <button class="play" id="voicePlay" aria-label="Play">
+        <svg class="i-play" viewBox="0 0 24 24" width="26" height="26"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+        <svg class="i-pause" viewBox="0 0 24 24" width="26" height="26"><path d="M7 5h4v14H7zM13 5h4v14h-4z" fill="currentColor"/></svg>
+      </button>
+    </div>
+    <button class="btn" id="voiceNext">Continue</button>
+    <audio id="voiceAudio" preload="metadata"></audio>
+  </section>
+
+  <!-- 6 · Sweet moments -->
+  <section class="scene" data-scene="moments">
+    <h2 class="title">Main character moments</h2>
+    <p class="hint top-hint">Swipe the cards</p>
+    <div class="deck" id="deck"></div>
+    <div class="pager">
+      <button class="round-btn" id="deckPrev" aria-label="Previous photo">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="dots" id="deckDots"></div>
+      <button class="round-btn" id="deckNext" aria-label="Next photo">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    <button class="btn" id="momentsNext">Continue</button>
+  </section>
+
+  <!-- 7 · Trailer -->
+  <section class="scene" data-scene="trailer">
+    <p class="whisper">Now showing: the bestie cut</p>
+    <h2 class="title">The Khushali Story</h2>
+    <div class="ticket" id="ticket">
+      <div class="ticket-main">
+        <p class="ticket-kicker">Admit one</p>
+        <p class="ticket-name">Khushali</p>
+        <p class="ticket-film" lang="ko">기쁨 생일 기록</p>
+        <dl class="ticket-meta">
+          <div><dt>Premiere</dt><dd>8 Nov 2026</dd></div>
+          <div><dt>Row</dt><dd>K</dd></div>
+          <div><dt>Seat</dt><dd>22</dd></div>
+        </dl>
+      </div>
+      <button class="ticket-stub" id="ticketTear"><span>Tear to watch</span></button>
+    </div>
+    <div class="screen" id="screen" hidden>
+      <video id="trailer" playsinline preload="metadata" poster="videos/trailer-poster.jpg" src="videos/trailer.mp4"></video>
+      <button class="screen-play" id="trailerPlay" aria-label="Play trailer">
+        <svg viewBox="0 0 24 24" width="34" height="34"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+      </button>
+    </div>
+    <p class="hint" id="trailerHint">Turn your sound on 🔊</p>
+    <button class="btn" id="trailerNext" hidden>Continue</button>
+  </section>
+
+  <!-- 8 · Letter -->
+  <section class="scene" data-scene="letter">
+    <p class="whisper">A little note from</p>
+    <h2 class="title script-title">Your Alien</h2>
+    <div class="envelope" id="envelope">
+      <button class="env-hit" id="envOpen" aria-label="Open the letter"></button>
+      <div class="env-back"></div>
+      <div class="letter" id="letter">
+        <div class="letter-scroll" id="letterScroll">
+          <p class="letter-date">8 November 2026</p>
+          <div class="letter-body guj" id="letterBody"></div>
+        </div>
+      </div>
+      <div class="env-front"></div>
+      <div class="env-flap"></div>
+      <span class="seal">K<i>♥</i>D</span>
+    </div>
+    <p class="hint" id="letterHint">Tap the seal, bestie</p>
+    <div class="row">
+      <button class="btn ghost" id="letterSkip" hidden>Show the whole letter</button>
+      <button class="btn" id="letterNext" hidden>Continue</button>
+    </div>
+  </section>
+
+  <!-- 9 · One last thing -->
+  <section class="scene" data-scene="last">
+    <div class="last-ribbon"><span>♥</span> One last thing…</div>
+    <p class="whisper" id="lastWhisper">I saved my favourite for the end</p>
+    <p class="hint" id="lastHint">Tap the gift</p>
+    <button class="gift gift-small" id="lastGift" aria-label="Open the last gift">
+      <span class="gift-glow"></span>
+      <span class="gift-lid"><span class="gift-bow"></span></span>
+      <span class="gift-box"></span>
+    </button>
+    <div class="collage" id="collage" aria-hidden="true">
+      <div class="collage-photos">
+        <figure class="cp cp1"><img src="images/col2.jpg" alt=""></figure>
+        <figure class="cp cp2"><img src="images/col3.jpg" alt=""></figure>
+        <figure class="cp cp3"><img src="images/col4.jpg" alt=""></figure>
+        <figure class="cp cp4"><img src="images/col5.jpg" alt=""></figure>
+        <figure class="cp cp5"><img src="images/col6.jpg" alt=""></figure>
+        <figure class="cp cp6"><img src="images/col7.jpg" alt=""></figure>
+        <figure class="cp cp-main"><img src="images/col1.jpg" alt="Khushali"></figure>
+      </div>
+      <p class="collage-title"><span>happy birthday, bestie!</span><b>Khushali</b></p>
+    </div>
+    <button class="btn" id="lastNext" hidden>Continue</button>
+  </section>
+
+  <!-- 10 · Finale -->
+  <section class="scene" data-scene="finale">
+    <div class="finale">
+      <p class="whisper">Once again</p>
+      <h2 class="headline">
+        <span class="headline-small">Happy 22nd Birthday</span>
+        <span class="script-name">Khushali</span>
+      </h2>
+      <p class="finale-text wish-en">If this made you smile even once, every late night I spent making it was worth it. You are my safe place, my loudest cheerleader, and the only person who reads me like an open book.</p>
+      <p class="finale-text wish-hi" lang="hi">तू है तो हर मुश्किल भी आसान लगती है,<br>तेरी एक हँसी से मेरी दुनिया मुस्कुराने लगती है।</p>
+      <p class="finale-text wish-gu guj">ભગવાન તને એટલી ખુશીઓ આપે કે તારું નામ “ખુશાલી” દરેક દિવસે સાચું પડે. 🤍</p>
+      <p class="finale-text finale-promise">May 22 bring you peace in your heart, courage for every dream and a reason to laugh every single day. And whatever life throws at you, you'll always have your Alien.</p>
+
+      <div class="kdrama">
+        <p class="kdrama-ko" lang="ko">기쁨 생일 기록</p>
+        <p class="kdrama-ro">Gippeum Saengil Girok</p>
+        <p class="kdrama-en guj">તને K-Drama બહુ ગમે છે ને? એટલે આ વેબસાઈટની લિંક ખાસ કોરિયનમાં રાખી છે. એનો અર્થ થાય: <b>ખુશીનો બર્થડે રેકોર્ડ</b>. એટલે કે ખુશાલીની બર્થડે બુક. ❤️</p>
+      </div>
+
+      <div class="wish">
+        <label for="wishInput">Your birthday wish (only you can see it)</label>
+        <div class="wish-row">
+          <input id="wishInput" type="text" maxlength="120" placeholder="I wish…" autocomplete="off">
+          <button class="btn small" id="wishSend">Send to the stars</button>
+        </div>
+        <p class="wish-saved" id="wishSaved" hidden></p>
+      </div>
+
+      <div class="row">
+        <button class="btn ghost" id="replay">Replay from the start</button>
+      </div>
+      <p class="signoff">Your Alien, forever. Dati <span aria-label="alien">👽</span></p>
+    </div>
+  </section>
+
+</main>
+
+<nav class="beads" id="beads" aria-label="Progress"></nav>
+
+<audio id="bgm" src="audio/song.mp3" loop preload="auto"></audio>
+
+<script src="script.js"></script>
+</body>
+</html>
