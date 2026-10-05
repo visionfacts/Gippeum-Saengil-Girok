@@ -856,3 +856,54 @@ body::after{
   radial-gradient(90% 70% at 50% 50%,rgba(5,1,2,.15) 0%,rgba(5,1,2,.6) 100%),
   linear-gradient(180deg,rgba(5,1,2,.35),rgba(5,1,2,.1) 35%,rgba(5,1,2,.7) 100%)}
 .cine-bg img{filter:saturate(.9) contrast(1.05) brightness(.78)}
+
+/* =========================================================
+   Letter v2: night sky with floating lanterns, paged letter
+   ========================================================= */
+[data-scene="letter"]{overflow:hidden}
+.night{
+  position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(60% 40% at 50% 100%,rgba(255,140,60,.22),transparent 70%),
+    linear-gradient(180deg,#070716 0%,#120c2a 35%,#2a0f2c 68%,#4a0d1c 100%);
+}
+.night canvas{position:absolute;inset:0;width:100%;height:100%}
+.moon{
+  position:absolute;top:9%;right:12%;width:64px;height:64px;border-radius:50%;
+  background:radial-gradient(circle at 38% 38%,#fffaf0,#f1ddb0 60%,#d9bd85);
+  box-shadow:0 0 40px 10px rgba(255,236,190,.25),0 0 120px 40px rgba(255,220,160,.1);
+}
+.moon::after{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 70% 60%,rgba(160,130,90,.25) 0 8%,transparent 9%),radial-gradient(circle at 40% 72%,rgba(160,130,90,.2) 0 6%,transparent 7%)}
+[data-scene="letter"] .whisper{color:#f6dfae}
+[data-scene="letter"] .script-title{color:#ffd99a;text-shadow:0 0 30px rgba(255,190,110,.45)}
+[data-scene="letter"] .hint{color:rgba(255,240,215,.85)}
+
+.envelope.is-reading{height:auto;aspect-ratio:auto;width:min(90vw,560px)}
+.envelope.is-reading .letter{position:relative;inset:auto;left:auto;right:auto;top:auto;bottom:auto}
+.letter{
+  background:
+    radial-gradient(120% 90% at 50% 0%,#fffdf7,#f8ecd4);
+  box-shadow:0 0 0 1px rgba(224,185,104,.45),0 0 70px rgba(255,170,90,.35),0 30px 60px rgba(0,0,0,.55);
+  border-radius:6px;overflow:visible;
+}
+.letter-inner{display:flex;flex-direction:column;padding:20px 24px 14px;min-height:min(56vh,420px);color:var(--ink);text-align:left}
+.letter-date{margin:0 0 6px;font-family:var(--caveat);font-size:1.3rem;color:var(--gold-deep);text-align:right}
+.letter-page{
+  flex:1;display:block;cursor:pointer;
+  font-size:clamp(1.02rem,2.7vw,1.18rem);line-height:1.95;color:#3a1015;
+  transform-origin:left center;
+}
+.letter-page .lp{opacity:0;filter:blur(4px);transition:opacity .8s ease, filter .8s ease}
+.letter-page .lp.in{opacity:1;filter:none}
+.letter-page.turn-next{animation:pageIn .6s var(--ease-out)}
+.letter-page.turn-prev{animation:pageBack .6s var(--ease-out)}
+@keyframes pageIn{from{opacity:0;transform:perspective(900px) rotateY(-12deg) translateX(18px)}to{opacity:1;transform:none}}
+@keyframes pageBack{from{opacity:0;transform:perspective(900px) rotateY(12deg) translateX(-18px)}to{opacity:1;transform:none}}
+.letter-nav{display:flex;align-items:center;justify-content:center;gap:16px;padding-top:10px;border-top:1px dashed rgba(169,127,48,.4);margin-top:10px}
+.lnav{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--crimson);border:1px solid rgba(169,127,48,.55)}
+.lnav:disabled{opacity:.3;cursor:default}
+.letter-count{font-family:var(--caveat);font-size:1.25rem;color:var(--gold-deep);min-width:3.5em;text-align:center}
+@media (max-width:520px){
+  .letter-inner{padding:16px 18px 12px;min-height:min(58vh,440px)}
+  .moon{width:46px;height:46px;top:7%;right:8%}
+}
