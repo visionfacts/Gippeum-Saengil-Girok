@@ -4,6 +4,19 @@
    ========================================================= */
 
 const CONTENT = {
+  // Secret code on the lock screen: her birthday, 8 November → DDMM
+  passcode: "0811",
+
+  // The Alien's star map: 6 stars that draw a heart. Change titles, text or photos freely.
+  stars: [
+    { title: "The first wish", img: "images/star1.jpg", text: "One birthday message, one month before board exams. Best timing of my life." },
+    { title: "Alien", img: "images/star2.jpg", text: "You called me different, then made it my favourite name. 👽" },
+    { title: "Fake-smile detector", img: "images/star3.jpg", text: "I can fool the whole world with a smile. Never you. Not even on a call." },
+    { title: "Forever", img: "images/star4.jpg", text: "Some friendships fade with time. Ours just keeps getting louder." },
+    { title: "Your laugh", img: "images/star5.jpg", text: "Still my favourite sound in the whole universe." },
+    { title: "2am talks", img: "images/star6.jpg", text: "Good news, bad days, random gossip. You are always the first one I tell." }
+  ],
+
   balloons: [
     "22 already looks so good on you ✨",
     "Still my favourite notification 📱",
@@ -293,6 +306,51 @@ backBtn.addEventListener("click", () => step(-1));
 $$("i", beads)[0].classList.add("on");
 beads.hidden = true;
 
+/* ---------- lock: only Khushali gets in ---------- */
+(function lock() {
+  const el = $("#lock"), dots = $$("#lockDots i"), hint = $("#lockHint");
+  const CODE = String(CONTENT.passcode);
+  let typed = "", tries = 0, busy = false;
+  const KEY = "khushali-22-unlocked";
+  const unlockNow = () => { el.remove(); document.body.classList.remove("locked"); };
+  try { if (sessionStorage.getItem(KEY)) { unlockNow(); return; } } catch (e) {}
+  const paint = () => dots.forEach((d, i) => d.classList.toggle("on", i < typed.length));
+  async function check() {
+    busy = true;
+    await wait(220);
+    if (typed === CODE) {
+      sfxChime();
+      el.classList.add("is-open");
+      hint.textContent = "Welcome, birthday girl 🤍";
+      try { sessionStorage.setItem(KEY, "1"); } catch (e) {}
+      await wait(1100);
+      unlockNow();
+      $("#prelude").focus({ preventScroll: true });
+      return;
+    }
+    tries++;
+    sfxPuff();
+    el.classList.remove("is-wrong"); el.offsetWidth; el.classList.add("is-wrong");
+    hint.textContent = tries === 1 ? "Not quite. Clue: the day the world got you" : "Your birthday, as DD MM 😉";
+    await wait(500);
+    typed = ""; paint(); busy = false;
+  }
+  function press(k) {
+    if (busy) return;
+    ctx();
+    if (k === "del") { typed = typed.slice(0, -1); paint(); return; }
+    if (typed.length >= CODE.length) return;
+    typed += k; paint();
+    if (typed.length === CODE.length) check();
+  }
+  $("#keypad").addEventListener("click", e => { const b = e.target.closest("button"); if (b) press(b.dataset.k); });
+  addEventListener("keydown", e => {
+    if (!document.body.contains(el)) return;
+    if (/^[0-9]$/.test(e.key)) press(e.key);
+    else if (e.key === "Backspace") press("del");
+  });
+})();
+
 /* ---------- 0. prelude ---------- */
 $("#prelude").addEventListener("click", () => {
   ctx();
@@ -301,6 +359,110 @@ $("#prelude").addEventListener("click", () => {
   musicOn();
   next();
 });
+
+/* ---------- 0b. 21 burns away, 22 rises ---------- */
+(function age() {
+  const cv = $("#ageCanvas"), c = cv.getContext("2d");
+  const l1 = $("#ageLine1"), l2 = $("#ageLine2"), btn = $("#ageNext");
+  let W, H, dpr, gap, olds = [], news = [], embers = [], t0 = 0, raf = 0, done = false, started = false;
+  const FONT = '700 {S}px "Cinzel", "Cormorant Garamond", Georgia, serif';
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const easeOut = t => 1 - Math.pow(1 - t, 3);
+  const gold = y => {                               // same gold ramp as the script headline
+    const t = y / H, a = [255, 243, 207], m = [224, 185, 104], b = [169, 127, 48];
+    const [p, q, k] = t < 0.55 ? [a, m, t / 0.55] : [m, b, (t - 0.55) / 0.45];
+    return p.map((v, i) => Math.round(lerp(v, q[i], k)));
+  };
+  function size() {
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    const w = cv.offsetWidth, h = cv.offsetHeight;
+    W = cv.width = Math.round(w * dpr); H = cv.height = Math.round(h * dpr);
+    gap = Math.max(3, Math.round((w < 420 ? 2.6 : 3.2) * dpr));
+  }
+  function sample(txt) {
+    const o = document.createElement("canvas"); o.width = W; o.height = H;
+    const g = o.getContext("2d");
+    g.fillStyle = "#fff"; g.textAlign = "center"; g.textBaseline = "middle";
+    let fs = H * 0.92; g.font = FONT.replace("{S}", fs);
+    const tw = g.measureText(txt).width; if (tw > W * 0.92) { fs *= W * 0.92 / tw; g.font = FONT.replace("{S}", fs); }
+    g.fillText(txt, W / 2, H * 0.54);
+    const d = g.getImageData(0, 0, W, H).data, out = [];
+    for (let y = 0; y < H; y += gap) for (let x = 0; x < W; x += gap) if (d[(y * W + x) * 4 + 3] > 128) out.push({ x, y, c: gold(y) });
+    return out;
+  }
+  function build() {
+    olds = sample("21").map(p => ({ ...p, burn: 1 - p.y / H + Math.random() * 0.22 }));
+    news = sample("22").map(p => ({ ...p, sx: W * (0.15 + Math.random() * 0.7), sy: H * (0.85 + Math.random() * 0.3), d: (p.x / W) * 0.35 + Math.random() * 0.25 }));
+  }
+  function drawCrisp() {                           // settle into clean, solid gold numerals
+    c.clearRect(0, 0, W, H);
+    let fs = H * 0.92; c.font = FONT.replace("{S}", fs);
+    const tw = c.measureText("22").width; if (tw > W * 0.92) { fs *= W * 0.92 / tw; c.font = FONT.replace("{S}", fs); }
+    const g = c.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0.1, "#fff3cf"); g.addColorStop(0.55, "#e0b968"); g.addColorStop(1, "#a97f30");
+    c.fillStyle = g; c.textAlign = "center"; c.textBaseline = "middle";
+    c.fillText("22", W / 2, H * 0.54);
+  }
+  function finish() {
+    if (done) return;
+    done = true; cancelAnimationFrame(raf); embers = [];
+    drawCrisp(); cv.classList.add("glow");
+    l2.classList.add("in");
+    sfxChime(); confetti(...centerOf(cv), 120);
+    setTimeout(() => show(btn), 700);
+  }
+  function frame(now) {
+    const t = (now - t0) / 1000, s = gap * 0.9;
+    c.clearRect(0, 0, W, H);
+    const BURN = 1.6, LEN = 1.9, FORM = BURN + LEN + 0.3, FLEN = 1.8;
+    // 21: still, then a burn front climbs from the bottom
+    const front = (t - BURN) / LEN;
+    for (const p of olds) {
+      const k = front - p.burn;
+      if (k < 0) { c.fillStyle = `rgb(${p.c})`; c.fillRect(p.x, p.y, s, s); }
+      else if (!p.lit) {
+        p.lit = true;
+        embers.push({ x: p.x, y: p.y, vx: (Math.random() - 0.5) * 0.9 * dpr, vy: -(0.6 + Math.random() * 1.8) * dpr, life: 1, fade: 0.012 + Math.random() * 0.02, r: s * (0.6 + Math.random() * 0.9) });
+      }
+    }
+    // embers drift up and fade
+    c.globalCompositeOperation = "lighter";
+    for (const e of embers) {
+      if (e.life <= 0) continue;
+      e.x += e.vx + Math.sin(e.y * 0.02) * 0.3; e.y += e.vy; e.vy *= 0.995; e.life -= e.fade;
+      const hot = Math.max(0, e.life);
+      c.fillStyle = `rgba(255,${Math.round(90 + 150 * hot)},${Math.round(40 * hot)},${hot})`;
+      c.fillRect(e.x, e.y, e.r, e.r);
+    }
+    c.globalCompositeOperation = "source-over";
+    // 22: rises out of the embers, left to right
+    if (t > FORM) {
+      for (const p of news) {
+        const k = Math.max(0, Math.min(1, (t - FORM - p.d) / FLEN)), e = easeOut(k);
+        if (k <= 0) continue;
+        const heat = 1 - e;
+        c.fillStyle = `rgb(${Math.round(lerp(p.c[0], 255, heat))},${Math.round(lerp(p.c[1], 130, heat))},${Math.round(lerp(p.c[2], 50, heat))})`;
+        c.fillRect(lerp(p.sx, p.x, e), lerp(p.sy, p.y, e), s, s);
+      }
+    }
+    if (t > FORM + FLEN + 0.6) { finish(); return; }
+    raf = requestAnimationFrame(frame);
+  }
+  async function start() {
+    if (started) return;
+    started = true;
+    try { await document.fonts.load('700 100px "Cinzel"'); } catch (e) {}
+    size(); build();
+    if (reduceMotion) { l1.classList.add("in"); finish(); return; }
+    l1.classList.add("in");
+    t0 = performance.now(); raf = requestAnimationFrame(frame);
+  }
+  cv.addEventListener("click", () => { if (started && !done) finish(); });
+  addEventListener("resize", () => { if (done) { size(); drawCrisp(); } });
+  btn.addEventListener("click", next);
+  onEnter.age = () => setTimeout(start, 500);
+  onLeave.age = () => { if (started && !done) finish(); };
+})();
 
 /* ---------- 1. intro ---------- */
 const introScene = scenes[sceneIndex("intro")];
@@ -428,6 +590,102 @@ $("#introNext").addEventListener("click", next);
     show($("#licenseNext"));
   });
   $("#licenseNext").addEventListener("click", next);
+})();
+
+/* ---------- 4c. the Alien's star map ---------- */
+(function starMap() {
+  const map = $("#starmap"), svg = $("#starLines"), modal = $("#memory");
+  // six points that trace a heart, clockwise from the dip at the top
+  const PTS = [[50, 30], [74, 13], [90, 40], [50, 88], [10, 40], [26, 13]];
+  const S = CONTENT.stars.slice(0, PTS.length);
+  const found = new Set();
+  let lastBtn = null, complete = false;
+
+  const segs = S.map((_, i) => {
+    const [a, b] = [PTS[i], PTS[(i + 1) % S.length]];
+    const ln = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    ln.setAttribute("x1", a[0]); ln.setAttribute("y1", a[1]); ln.setAttribute("x2", b[0]); ln.setAttribute("y2", b[1]);
+    ln.setAttribute("pathLength", "1");
+    svg.appendChild(ln);
+    return ln;
+  });
+  const btns = S.map((st, i) => {
+    const [x, y] = PTS[i];
+    const b = document.createElement("button");
+    b.className = "star" + (x < 25 ? " lbl-l" : x > 75 ? " lbl-r" : "");
+    b.style.left = x + "%"; b.style.top = y + "%";
+    b.style.setProperty("--d", `${-(i * 0.7)}s`);
+    b.setAttribute("aria-label", `Star ${i + 1}: ${st.title}`);
+    b.innerHTML = `<span class="star-dot" aria-hidden="true"></span><span class="star-name">${st.title}</span>`;
+    b.addEventListener("click", () => open(i, b));
+    map.appendChild(b);
+    return b;
+  });
+
+  function open(i, b) {
+    lastBtn = b;
+    const st = S[i];
+    $("#memImg").src = st.img; $("#memImg").alt = st.title;
+    $("#memTitle").textContent = st.title; $("#memText").textContent = st.text;
+    modal.hidden = false; modal.classList.remove("in"); modal.offsetWidth; modal.classList.add("in");
+    sfxChime();
+    if (!found.has(i)) {
+      found.add(i); b.classList.add("found");
+      segs.forEach((ln, k) => { if (found.has(k) && found.has((k + 1) % S.length)) ln.classList.add("on"); });
+    }
+    $("#memClose").focus({ preventScroll: true });
+  }
+  async function close() {
+    if (modal.hidden) return;
+    modal.hidden = true;
+    lastBtn?.focus({ preventScroll: true });
+    if (found.size === S.length && !complete) {
+      complete = true;
+      await wait(300);
+      map.classList.add("complete");
+      $("#ufo").classList.add("fly");
+      sfxChime(); confetti(...centerOf(map), 160);
+      $("#starsWhisper").textContent = "Discovered by an Alien. Named after you.";
+      $("#starsTitle").textContent = "Constellation Khushali ✨";
+      $("#starsHint").textContent = "Every star up there is a little bit of us";
+      await wait(900);
+      show($("#starsNext"));
+    } else if (!complete) {
+      const left = S.length - found.size;
+      $("#starsHint").textContent = left === 1 ? "One last star…" : `${left} more stars hiding up there`;
+    }
+  }
+  $("#memClose").addEventListener("click", close);
+  modal.addEventListener("click", e => { if (e.target === modal) close(); });
+  addEventListener("keydown", e => { if (e.key === "Escape") close(); });
+  $("#starsNext").addEventListener("click", next);
+
+  /* twinkling deep-space background */
+  const cv = $("#spaceCanvas"), c = cv.getContext("2d");
+  let W, H, dpr, dots = [], running = false;
+  function size() { dpr = Math.min(devicePixelRatio || 1, 2); W = cv.width = cv.offsetWidth * dpr; H = cv.height = cv.offsetHeight * dpr; }
+  function draw() {
+    c.clearRect(0, 0, W, H);
+    for (const d of dots) {
+      d.t += d.v;
+      c.globalAlpha = 0.2 + 0.6 * Math.abs(Math.sin(d.t));
+      c.fillStyle = d.warm ? "#ffe2a8" : "#e8ecff";
+      c.beginPath(); c.arc(d.x, d.y, d.r, 0, 7); c.fill();
+    }
+    c.globalAlpha = 1;
+    if (running) requestAnimationFrame(draw);
+  }
+  function start() {
+    size();
+    if (!dots.length) dots = Array.from({ length: innerWidth < 600 ? 110 : 180 }, () => ({
+      x: Math.random() * W, y: Math.random() * H, r: (Math.random() < 0.1 ? 1.4 : 0.7) * dpr,
+      t: Math.random() * 6, v: 0.005 + Math.random() * 0.02, warm: Math.random() < 0.25 }));
+    if (reduceMotion) { draw(); return; }
+    if (!running) { running = true; draw(); }
+  }
+  addEventListener("resize", () => { if (running) size(); });
+  onEnter.stars = start;
+  onLeave.stars = () => { running = false; modal.hidden = true; };
 })();
 
 /* ---------- 5. voice / song ---------- */
