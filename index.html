@@ -13,10 +13,30 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600&text=%EA%B8%B0%EC%81%A8%EC%83%9D%EC%9D%BC%EA%B8%B0%EB%A1%9D&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="locked">
 
 <canvas id="sky" aria-hidden="true"></canvas>
 <canvas id="confetti" aria-hidden="true"></canvas>
+
+<!-- Lock: only Khushali gets in -->
+<div class="lock" id="lock" role="dialog" aria-modal="true" aria-labelledby="lockTitle">
+  <div class="lock-inner">
+    <span class="lock-seal" aria-hidden="true">K<i>♥</i>D</span>
+    <p class="whisper">Psst… private property of an Alien 👽</p>
+    <h1 class="title" id="lockTitle">Only Khushali can open this</h1>
+    <div class="lock-dots" id="lockDots" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <p class="hint" id="lockHint" aria-live="polite">4 digits. You already know them 🤍</p>
+    <div class="keypad" id="keypad">
+      <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button>
+      <button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button>
+      <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button>
+      <span></span><button data-k="0">0</button>
+      <button data-k="del" aria-label="Delete">
+        <svg viewBox="0 0 24 24" width="22" height="22"><path d="M21 5H9l-6 7 6 7h12zM18 9l-6 6M12 9l6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
 
 <header class="chrome">
   <button class="icon-btn" id="backBtn" aria-label="Go back" hidden>
@@ -38,6 +58,14 @@
       <span class="prelude-for">For Khushali</span>
       <span class="prelude-tap">Tap anywhere to begin 👽</span>
     </button>
+  </section>
+
+  <!-- 0b · 21 burns into 22 -->
+  <section class="scene" data-scene="age">
+    <p class="whisper age-line" id="ageLine1">21 was a beautiful chapter…</p>
+    <canvas class="age-canvas" id="ageCanvas" role="img" aria-label="The number 21 burns away and becomes 22"></canvas>
+    <p class="whisper age-line" id="ageLine2">…but 22 is all yours, Khushali ✨</p>
+    <button class="btn" id="ageNext" hidden>Open your gift</button>
   </section>
 
   <!-- 1 · Gift intro -->
@@ -140,6 +168,26 @@
       <span class="stamp" aria-hidden="true">Approved<br>forever</span>
     </button>
     <button class="btn" id="licenseNext" hidden>Continue</button>
+  </section>
+
+  <!-- 4c · The Alien's star map -->
+  <section class="scene" data-scene="stars">
+    <div class="space" aria-hidden="true"><canvas id="spaceCanvas"></canvas><span class="ufo" id="ufo">🛸</span></div>
+    <p class="whisper" id="starsWhisper">A map from the Alien's planet 👽</p>
+    <h2 class="title" id="starsTitle">Find the stars that are ours</h2>
+    <div class="starmap" id="starmap">
+      <svg class="star-lines" id="starLines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
+    </div>
+    <p class="hint" id="starsHint" aria-live="polite">Tap a star to open a memory</p>
+    <button class="btn" id="starsNext" hidden>Continue</button>
+    <div class="memory" id="memory" role="dialog" aria-modal="true" aria-labelledby="memTitle" hidden>
+      <figure class="memory-card">
+        <span class="tape" aria-hidden="true"></span>
+        <img id="memImg" alt="">
+        <figcaption><b id="memTitle"></b><span id="memText"></span></figcaption>
+      </figure>
+      <button class="btn small" id="memClose">Back to the sky</button>
+    </div>
   </section>
 
   <!-- 5 · Voice / song -->
