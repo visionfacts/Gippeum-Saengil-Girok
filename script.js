@@ -21,9 +21,9 @@ const CONTENT = {
   match: ["images/reel05.jpg", "images/reel07.jpg", "images/reel18.jpg", "images/reel19.jpg", "images/reel03.jpg", "images/reel10.jpg"],
 
   // Words that fly through space (keep them short)
-  words: ["Happy Birthday", "Khushali", "22 ✨", "You mean so much to me", "Best friend forever", "Forever 🤍",
+  words: ["Happy Birthday", "Khushali", "22 ✨", "You mean so much to me", "Best friend forever", "1314k8",
           "My favourite human", "Main character", "생일 축하해", "જન્મદિવસની શુભકામના", "Love you 👽", "Stay this happy",
-          "Fake-smile detector", "Always here", "Happy 22nd", "Dati 🤍 Khushali"],
+          "Fake-smile detector", "Always here", "Happy 22nd", "1314k8"],
 
   // The Alien's star map: 6 stars that draw a heart. Change titles, text or photos freely.
   stars: [
@@ -343,7 +343,11 @@ beads.hidden = true;
       try { sessionStorage.setItem(KEY, "1"); } catch (e) {}
       await wait(1100);
       unlockNow();
-      $("#prelude").focus({ preventScroll: true });
+      // the keypad tap counts as a user gesture, so music can start right away
+      musicBtn.hidden = false;
+      beads.hidden = false;
+      musicOn();
+      goTo(sceneIndex("words"));
       return;
     }
     tries++;
