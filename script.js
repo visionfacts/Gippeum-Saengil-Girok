@@ -10,6 +10,9 @@ const CONTENT = {
   // A reel of 22 photos that runs along a looping strip
   reel: Array.from({ length: 22 }, (_, i) => `images/reel${String(i + 1).padStart(2, "0")}.jpg`),
 
+  // Little titles on the five envelopes (same order as the letter pages)
+  letterTitles: ["Open me first", "My one prayer", "Your dreams", "About your Alien", "Open me last"],
+
   // Say cheese: the camera prints these, one per tap
   snaps: [
     { img: "images/snap1.jpg", note: "Felt too pretty ✨" },
@@ -20,10 +23,11 @@ const CONTENT = {
   // Flip & match: 6 photos, each appears twice
   match: ["images/reel05.jpg", "images/reel07.jpg", "images/reel18.jpg", "images/reel19.jpg", "images/reel03.jpg", "images/reel10.jpg"],
 
-  // Words that fly through space (keep them short)
-  words: ["Happy Birthday", "Khushali", "22 ✨", "You mean so much to me", "Best friend forever", "1314k8",
-          "My favourite human", "Main character", "생일 축하해", "જન્મદિવસની શુભકામના", "Love you 👽", "Stay this happy",
-          "Fake-smile detector", "Always here", "Happy 22nd", "1314k8"],
+  // Galaxy of words (from "The Khushali" cover). "hero" lines fly big through the middle.
+  words: ["THE KHUSHALI", "Proof That Soulmates Exist", "smart", "PEACE", "YOU ARE THE MOST IMPORTANT",
+          "Sportive", "Irreplaceable", "LOYAL", "HONEST", "forgiving", "Secret keeper", "Non judgemental",
+          "Darling", "15 Reasons Why She's", "1314k8", "Happy Birthday"],
+  heroWords: ["THE KHUSHALI", "YOU ARE THE MOST IMPORTANT", "1314k8", "Proof That Soulmates Exist", "Happy Birthday", "Darling"],
 
   // The Alien's star map: 6 stars that draw a heart. Change titles, text or photos freely.
   stars: [
@@ -686,7 +690,70 @@ $("#introNext").addEventListener("click", next);
 /* ---------- 4b. bestie license ---------- */
 (function license() {
   const card = $("#license");
+  /* scratch card on top of the license, like a lottery card */
+  const cv = $("#scratch"), c = cv.getContext("2d"), wrap = $("#scratchWrap");
+  let revealed = false, drawing = false, lastPt = null, moves = 0, dpr = 1;
+  function paintFoil() {
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    const w = wrap.offsetWidth, h = wrap.offsetHeight;
+    cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+    const W = cv.width, H = cv.height;
+    c.globalCompositeOperation = "source-over";
+    const g = c.createLinearGradient(0, 0, W, H);
+    g.addColorStop(0, "#f0457a"); g.addColorStop(0.55, "#d61a5c"); g.addColorStop(1, "#a80f45");
+    c.fillStyle = g; c.fillRect(0, 0, W, H);
+    c.globalAlpha = 0.09; c.fillStyle = "#fff";                       // shimmer stripes
+    for (let x = -H; x < W; x += 26 * dpr) { c.beginPath(); c.moveTo(x, 0); c.lineTo(x + 10 * dpr, 0); c.lineTo(x + 10 * dpr + H, H); c.lineTo(x + H, H); c.fill(); }
+    c.globalAlpha = 1;
+    for (let i = 0; i < 70; i++) {                                    // sparkle dots
+      c.fillStyle = Math.random() < 0.5 ? "rgba(255,225,160,.85)" : "rgba(255,255,255,.7)";
+      const r = (Math.random() * 1.6 + 0.6) * dpr; c.beginPath(); c.arc(Math.random() * W, Math.random() * H, r, 0, 7); c.fill();
+    }
+    c.textAlign = "center"; c.textBaseline = "middle"; c.fillStyle = "#fff";
+    c.font = `600 ${15 * dpr}px "Cormorant Garamond", Georgia, serif`;
+    c.globalAlpha = 0.85; c.fillText("MINISTRY OF FRIENDSHIP 👽", W / 2, H / 2 - 34 * dpr);
+    c.globalAlpha = 1;
+    c.font = `italic 700 ${Math.min(34, w / 11) * dpr}px "Playfair Display", "Cormorant Garamond", Georgia, serif`;
+    c.fillText("Scratch to reveal ✨", W / 2, H / 2 + 2 * dpr);
+    c.font = `500 ${16 * dpr}px "Cormorant Garamond", Georgia, serif`;
+    c.globalAlpha = 0.9; c.fillText("something very official is under here", W / 2, H / 2 + 34 * dpr);
+    c.globalAlpha = 1;
+    c.strokeStyle = "rgba(255,225,160,.6)"; c.lineWidth = 2 * dpr; c.setLineDash([6 * dpr, 6 * dpr]);
+    c.strokeRect(12 * dpr, 12 * dpr, W - 24 * dpr, H - 24 * dpr); c.setLineDash([]);
+  }
+  function pt(e) { const r = cv.getBoundingClientRect(); return [(e.clientX - r.left) * dpr, (e.clientY - r.top) * dpr]; }
+  function scratchTo(p) {
+    c.globalCompositeOperation = "destination-out";
+    c.lineCap = "round"; c.lineJoin = "round"; c.lineWidth = 46 * dpr;
+    c.beginPath(); c.moveTo(...(lastPt || p)); c.lineTo(...p); c.stroke();
+    c.beginPath(); c.arc(p[0], p[1], 23 * dpr, 0, 7); c.fill();
+    lastPt = p;
+    if (++moves % 8 === 0) check();
+  }
+  function check() {
+    const { width: W, height: H } = cv, d = c.getImageData(0, 0, W, H).data;
+    let clear = 0, total = 0;
+    for (let i = 3; i < d.length; i += 4 * 24) { total++; if (d[i] < 40) clear++; }
+    if (clear / total > 0.5) reveal();
+  }
+  function reveal() {
+    if (revealed) return;
+    revealed = true; drawing = false;
+    cv.classList.add("gone");
+    sfxChime(); confetti(...centerOf(wrap), 90);
+    $("#licenseHint").textContent = "Now tap the card to stamp it";
+    setTimeout(() => { cv.remove(); card.focus({ preventScroll: true }); }, 700);
+  }
+  cv.addEventListener("pointerdown", e => { if (revealed) return; drawing = true; lastPt = null; ctx(); cv.setPointerCapture(e.pointerId); scratchTo(pt(e)); });
+  cv.addEventListener("pointermove", e => { if (drawing) scratchTo(pt(e)); });
+  const stop = () => { if (drawing) { drawing = false; check(); } };
+  cv.addEventListener("pointerup", stop); cv.addEventListener("pointercancel", stop);
+  cv.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); reveal(); } });
+  addEventListener("resize", () => { if (!revealed && document.body.contains(cv) && wrap.offsetWidth) paintFoil(); });
+  onEnter.license = () => { if (!revealed) requestAnimationFrame(paintFoil); };
+
   card.addEventListener("click", async () => {
+    if (!revealed) return;
     if (card.classList.contains("is-stamped")) return;
     card.classList.add("is-stamped");
     await wait(260);
@@ -865,44 +932,97 @@ const voice = $("#voiceAudio");
   onLeave.voice = () => { if (!voice.paused) voice.pause(); musicOn(); };
 })();
 
-/* ---------- 6. photo deck ---------- */
-(function deck() {
-  const box = $("#deck"), dots = $("#deckDots");
-  const cards = CONTENT.photos.map((p, i) => {
-    const f = document.createElement("figure");
-    f.className = "card";
-    f.style.setProperty("--tilt", `${[-3, 2.5, -1.5, 3, -2.5, 1.5][i % 6]}deg`);
-    f.innerHTML = `<span class="tape" aria-hidden="true"></span><img src="${p.src}" alt="Khushali, photo ${i + 1}" loading="${i < 3 ? "eager" : "lazy"}"><figcaption>${p.caption}</figcaption>`;
-    box.appendChild(f);
-    dots.appendChild(document.createElement("i"));
-    return f;
-  });
-  let k = 0;
-  function layout(drag = 0) {
-    cards.forEach((c, i) => {
-      const d = i - k + drag;
-      const ad = Math.abs(d);
-      c.style.transform = `translateX(${d * 46}%) scale(${1 - Math.min(ad, 3) * 0.13}) rotate(calc(${d * 4}deg + var(--tilt)))`;
-      c.style.opacity = ad > 2.2 ? 0 : 1 - Math.min(ad, 2) * 0.28;
-      c.style.zIndex = 100 - Math.round(ad * 10);
-      c.style.pointerEvents = Math.round(d) === 0 ? "auto" : "none";
-    });
-    $$("i", dots).forEach((d, i) => d.classList.toggle("on", i === k));
-    $("#deckPrev").disabled = k === 0;
-    $("#deckNext").disabled = k === cards.length - 1;
+/* ---------- 6. main character moments: photos drifting through space ---------- */
+(function moments() {
+  const orbit = $("#orbit"), modal = $("#mview"), sc = scenes[sceneIndex("moments")];
+  const P = CONTENT.photos, NEAR = -150, FAR = 1700;
+  let W = 0, H = 0, items = [], running = false, paused = false, last = 0, k = 0, seen = new Set(), shownNext = false;
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  function place(it, far) {
+    let x, y;
+    do { x = rnd(-0.62, 0.62) * W; y = rnd(-0.42, 0.42) * H; } while (Math.abs(x) < W * 0.12 && Math.abs(y) < H * 0.1);
+    Object.assign(it, { x, y, z: far ? FAR : rnd(NEAR + 300, FAR), r: rnd(-14, 14), ry: rnd(-25, 25), vr: rnd(-4, 4), vy: rnd(-6, 6) });
   }
-  const go = n => { k = Math.max(0, Math.min(cards.length - 1, n)); layout(); };
-  $("#deckPrev").addEventListener("click", () => go(k - 1));
-  $("#deckNext").addEventListener("click", () => go(k + 1));
-  swipe(box, dir => go(k + dir), (dx, w) => { cards.forEach(c => c.classList.add("dragging")); layout(dx / w); },
-    () => cards.forEach(c => c.classList.remove("dragging")));
+  function build() {
+    W = orbit.clientWidth; H = orbit.clientHeight;
+    items = P.map((p, i) => {
+      const b = document.createElement("button");
+      b.className = "floater";
+      b.setAttribute("aria-label", `Open photo ${i + 1}: ${p.caption}`);
+      b.innerHTML = `<img src="${p.src}" alt="" draggable="false" loading="lazy"><span>${p.caption}</span>`;
+      b.addEventListener("click", () => open(i));
+      orbit.appendChild(b);
+      const it = { el: b, i };
+      place(it, false);
+      it.z = NEAR + 250 + (i / P.length) * (FAR - NEAR - 250);         // spread them out in depth
+      return it;
+    });
+  }
+  function draw() {
+    for (const it of items) {
+      const near = Math.min(1, (it.z - NEAR) / 260), far = Math.min(1, (FAR - it.z) / 300);
+      it.el.style.opacity = Math.max(0, Math.min(near, far));
+      it.el.style.transform = `translate3d(${it.x}px, ${it.y}px, ${-it.z}px) rotateY(${it.ry}deg) rotateZ(${it.r}deg)`;
+      it.el.style.zIndex = Math.round(FAR - it.z);
+    }
+  }
+  function frame(now) {
+    if (!running) return;
+    const dt = Math.min(50, now - (last || now)) / 1000; last = now;
+    if (!paused) for (const it of items) {
+      if (it.el.matches(":hover")) continue;                      // hovered photo waits for you
+      it.z -= dt * 70; it.r += dt * it.vr; it.y += dt * it.vy;
+      if (it.z < NEAR) place(it, true);
+    }
+    draw(); twinkle(now);
+    requestAnimationFrame(frame);
+  }
+  function open(i) {
+    k = i; paused = true; ctx(); sfxPop();
+    seen.add(i);
+    $("#mviewImg").src = P[i].src; $("#mviewImg").alt = P[i].caption;
+    $("#mviewCap").textContent = P[i].caption;
+    $("#mviewCount").textContent = `${i + 1} / ${P.length}`;
+    if (modal.hidden) { modal.hidden = false; modal.classList.remove("in"); modal.offsetWidth; modal.classList.add("in"); $("#mviewClose").focus({ preventScroll: true }); }
+    if (seen.size >= 3) $("#momentsHint").textContent = `${seen.size} of ${P.length} moments opened 💫`;
+  }
+  function close() { if (modal.hidden) return; modal.hidden = true; paused = false; }
+  $("#mviewClose").addEventListener("click", close);
+  $("#mviewPrev").addEventListener("click", () => open((k - 1 + P.length) % P.length));
+  $("#mviewNextPh").addEventListener("click", () => open((k + 1) % P.length));
+  modal.addEventListener("click", e => { if (e.target === modal) close(); });
+  swipe($("#mviewImg"), dir => open((k + dir + P.length) % P.length));
   addEventListener("keydown", e => {
     if (scenes[current].dataset.scene !== "moments") return;
-    if (e.key === "ArrowRight") go(k + 1);
-    if (e.key === "ArrowLeft") go(k - 1);
+    if (e.key === "Escape") close();
+    if (!modal.hidden && e.key === "ArrowRight") open((k + 1) % P.length);
+    if (!modal.hidden && e.key === "ArrowLeft") open((k - 1 + P.length) % P.length);
   });
   $("#momentsNext").addEventListener("click", next);
-  layout();
+
+  /* deep-space stars */
+  const cv = $("#cosmosStars"), c = cv.getContext("2d");
+  let dots = [], dpr = 1;
+  function sizeStars() {
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    cv.width = cv.offsetWidth * dpr; cv.height = cv.offsetHeight * dpr;
+    dots = Array.from({ length: innerWidth < 600 ? 160 : 320 }, () => ({ x: Math.random() * cv.width, y: Math.random() * cv.height,
+      r: (Math.random() < 0.08 ? 1.6 : 0.8) * dpr, t: Math.random() * 6, v: 0.6 + Math.random() * 2 }));
+  }
+  function twinkle(now) {
+    c.clearRect(0, 0, cv.width, cv.height);
+    for (const d of dots) { c.globalAlpha = 0.35 + 0.65 * Math.abs(Math.sin(d.t + now / 1000 * d.v * 0.5)); c.fillStyle = "#e9efff"; c.fillRect(d.x, d.y, d.r, d.r); }
+    c.globalAlpha = 1;
+  }
+  addEventListener("resize", () => { if (!running) return; W = orbit.clientWidth; H = orbit.clientHeight; sizeStars(); });
+
+  onEnter.moments = () => requestAnimationFrame(() => {
+    if (!items.length) build();
+    sizeStars();
+    if (reduceMotion) { draw(); twinkle(0); } else { running = true; last = 0; requestAnimationFrame(frame); }
+    if (!shownNext) { shownNext = true; setTimeout(() => show($("#momentsNext")), 4000); }
+  });
+  onLeave.moments = () => { running = false; close(); };
 })();
 
 /* ---------- 6b. flip & match ---------- */
@@ -972,9 +1092,9 @@ const voice = $("#voiceAudio");
   onLeave.trailer = () => { if (!v.paused) v.pause(); musicOn(); };
 })();
 
-/* ---------- 8. letter: page by page under a sky of lanterns ---------- */
-(function letter() {
-  const env = $("#envelope"), pageEl = $("#letterPage");
+/* ---------- 8. letter: five little envelopes ---------- */
+(function letters() {
+  const box = $("#envs"), modal = $("#ltm"), textEl = $("#ltmText"), count = $("#ltCount");
   const parts = CONTENT.letter.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
   const pages = [];
   parts.forEach((p, i) => {
@@ -982,158 +1102,187 @@ const voice = $("#voiceAudio");
     else if (i === parts.length - 1 && pages.length) pages[pages.length - 1] += "\n\n" + p; // wish + signature
     else pages.push(p);
   });
-  let k = 0, seenAll = false, timers = [];
+  const TITLES = CONTENT.letterTitles || [];
+  const read = new Set();
+  let timer = 0, full = "", typing = false, lastBtn = null, done = false;
 
-  function render(dir = 1) {
-    timers.forEach(clearTimeout); timers = [];
-    pageEl.classList.remove("turn-next", "turn-prev"); pageEl.offsetWidth;
-    pageEl.classList.add(dir > 0 ? "turn-next" : "turn-prev");
-    pageEl.innerHTML = "";
-    const bits = pages[k].split(/\n/).flatMap(line => line ? (line.match(/[^.!?…]+(?:[.!?…]+|$)\s*/g) || [line]).concat(["\n"]) : ["\n"]);
-    let d = 250;
-    bits.forEach(t => {
-      if (t === "\n") { pageEl.appendChild(document.createElement("br")); return; }
-      const sp = document.createElement("span"); sp.className = "lp"; sp.textContent = t;
-      pageEl.appendChild(sp);
-      timers.push(setTimeout(() => sp.classList.add("in"), reduceMotion ? 0 : d));
-      d += 520;
-    });
-    $("#letterCount").textContent = `${k + 1} / ${pages.length}`;
-    $("#letterPrev").disabled = k === 0;
-    $("#letterNextPg").disabled = k === pages.length - 1;
-    if (k === pages.length - 1 && !seenAll) {
-      seenAll = true;
-      timers.push(setTimeout(() => { show($("#letterNext")); sfxChime(); }, d + 300));
+  pages.forEach((_, i) => {
+    const b = document.createElement("button");
+    b.className = "envl";
+    b.style.setProperty("--tilt", `${[-3, 2, -1.5, 3, -2][i % 5]}deg`);
+    b.setAttribute("aria-label", `Letter ${i + 1}: ${TITLES[i] || ""}`);
+    b.innerHTML = `
+      <span class="envl-paper">
+        <svg class="sprig l" aria-hidden="true"><use href="#sprig"/></svg>
+        <svg class="sprig r" aria-hidden="true"><use href="#sprig"/></svg>
+        <span class="envl-flap"></span>
+        <span class="envl-seal" aria-hidden="true">♥</span>
+        <span class="envl-read" aria-hidden="true">read ♥</span>
+      </span>
+      <span class="envl-label"><b>${i + 1}</b> ${TITLES[i] || ""}</span>`;
+    b.addEventListener("click", () => open(i, b));
+    box.appendChild(b);
+  });
+  count.textContent = `♥ 0 of ${pages.length} letters read`;
+
+  const graphemes = str => {
+    if (window.Intl && Intl.Segmenter) return [...new Intl.Segmenter(undefined, { granularity: "grapheme" }).segment(str)].map(s => s.segment);
+    return str.split(/(\s+)/);                    // fallback: word by word
+  };
+  function render(str) { textEl.innerHTML = ""; str.split("\n").forEach((ln, i) => { if (i) textEl.appendChild(document.createElement("br")); textEl.appendChild(document.createTextNode(ln)); }); }
+  function type(str) {
+    clearTimeout(timer); full = str;
+    if (reduceMotion) { render(str); finishType(); return; }
+    const g = graphemes(str); let n = 0; typing = true; $("#ltmTap").hidden = false;
+    const tick = () => {
+      n = Math.min(g.length, n + 1);
+      render(g.slice(0, n).join(""));
+      textEl.scrollTop = textEl.scrollHeight;
+      if (n < g.length) timer = setTimeout(tick, 38); else finishType();
+    };
+    tick();
+  }
+  function finishType() { typing = false; clearTimeout(timer); render(full); $("#ltmTap").hidden = true; }
+
+  function open(i, b) {
+    lastBtn = b; ctx(); sfxPop();
+    b.classList.add("opening");
+    setTimeout(() => {
+      $("#ltmLabel").textContent = `Letter ${i + 1} of ${pages.length}${TITLES[i] ? " · " + TITLES[i] : ""}`;
+      modal.hidden = false; modal.classList.remove("in"); modal.offsetWidth; modal.classList.add("in");
+      type(pages[i]);
+      $("#ltmClose").focus({ preventScroll: true });
+      if (!read.has(i)) { read.add(i); b.classList.add("is-read"); }
+      count.textContent = `♥ ${read.size} of ${pages.length} letters read`;
+    }, 380);
+  }
+  async function close() {
+    if (modal.hidden) return;
+    clearTimeout(timer); typing = false;
+    modal.hidden = true;
+    lastBtn?.classList.remove("opening");
+    lastBtn?.focus({ preventScroll: true });
+    if (read.size === pages.length && !done) {
+      done = true;
+      count.textContent = "♥ All letters read. I meant every word 🤍";
+      sfxChime(); confetti(...centerOf(box), 140);
+      await wait(700); show($("#letterNext"));
     }
   }
-  const go = n => { if (n < 0 || n >= pages.length || n === k) return; const dir = n > k ? 1 : -1; k = n; render(dir); };
-  $("#letterPrev").addEventListener("click", e => { e.stopPropagation(); go(k - 1); });
-  $("#letterNextPg").addEventListener("click", e => { e.stopPropagation(); go(k + 1); });
-  pageEl.addEventListener("click", e => {
-    const r = pageEl.getBoundingClientRect();
-    go(e.clientX < r.left + r.width * 0.35 ? k - 1 : k + 1);
-  });
-  swipe(pageEl, dir => go(k + dir));
-
-  $("#envOpen").addEventListener("click", async () => {
-    if (env.classList.contains("is-open")) return;
-    sfxChime();
-    env.classList.add("is-open");
-    $("#letterHint").hidden = true;
-    await wait(900);
-    env.classList.add("is-reading");
-    await wait(400);
-    render(1);
-  });
+  $("#ltmCard").addEventListener("click", e => { if (typing && !e.target.closest("#ltmClose")) finishType(); });
+  $("#ltmClose").addEventListener("click", close);
+  modal.addEventListener("click", e => { if (e.target === modal) close(); });
+  addEventListener("keydown", e => { if (e.key === "Escape") close(); });
   $("#letterNext").addEventListener("click", next);
-
-  /* lantern sky */
-  const cv = $("#lanterns"), c = cv.getContext("2d");
-  let W, H, dpr, L = [], stars = [], running = false;
-  function size() {
-    dpr = Math.min(devicePixelRatio || 1, 2);
-    W = cv.width = cv.offsetWidth * dpr; H = cv.height = cv.offsetHeight * dpr;
-  }
-  function lantern(randomY) {
-    const z = Math.random();                 // 0 far, 1 near
-    return { x: Math.random() * W, y: randomY ? Math.random() * H : H + 60 * dpr,
-      s: (6 + z * z * 26) * dpr, v: (0.12 + z * 0.45) * dpr, a: 0.35 + z * 0.6,
-      w: Math.random() * 6.28, f: Math.random() * 6.28, z };
-  }
-  function draw() {
-    c.clearRect(0, 0, W, H);
-    for (const st of stars) {
-      st.t += 0.02;
-      c.fillStyle = `rgba(255,245,225,${0.25 + 0.35 * Math.abs(Math.sin(st.t))})`;
-      c.fillRect(st.x, st.y, st.r, st.r);
-    }
-    L.sort((a, b) => a.z - b.z);
-    for (const p of L) {
-      p.y -= p.v; p.w += 0.008; p.f += 0.15; p.x += Math.sin(p.w) * 0.25 * dpr;
-      if (p.y < -80 * dpr) Object.assign(p, lantern(false));
-      const fl = 0.85 + 0.15 * Math.sin(p.f) * Math.sin(p.f * 0.7);
-      const s = p.s, x = p.x, y = p.y;
-      const g = c.createRadialGradient(x, y + s * 0.4, 0, x, y + s * 0.4, s * 3.2);
-      g.addColorStop(0, `rgba(255,170,80,${0.32 * p.a * fl})`); g.addColorStop(1, "rgba(255,140,60,0)");
-      c.fillStyle = g; c.beginPath(); c.arc(x, y + s * 0.4, s * 3.2, 0, 7); c.fill();
-      const body = c.createLinearGradient(0, y - s * 0.7, 0, y + s * 0.9);
-      body.addColorStop(0, `rgba(255,214,140,${p.a})`); body.addColorStop(1, `rgba(255,128,52,${p.a})`);
-      c.fillStyle = body;
-      c.beginPath();
-      c.moveTo(x - s * 0.36, y - s * 0.7); c.lineTo(x + s * 0.36, y - s * 0.7);
-      c.quadraticCurveTo(x + s * 0.56, y, x + s * 0.48, y + s * 0.85);
-      c.lineTo(x - s * 0.48, y + s * 0.85);
-      c.quadraticCurveTo(x - s * 0.56, y, x - s * 0.36, y - s * 0.7);
-      c.fill();
-      c.fillStyle = `rgba(255,250,220,${0.8 * p.a * fl})`;
-      c.beginPath(); c.ellipse(x, y + s * 0.62, s * 0.22, s * 0.13, 0, 0, 7); c.fill();
-    }
-    if (running) requestAnimationFrame(draw);
-  }
-  function start() {
-    size();
-    if (!L.length) {
-      const n = innerWidth < 600 ? 26 : 42;
-      L = Array.from({ length: n }, () => lantern(true));
-      stars = Array.from({ length: 70 }, () => ({ x: Math.random() * W, y: Math.random() * H * 0.7, r: (Math.random() < 0.15 ? 2 : 1) * dpr, t: Math.random() * 6 }));
-    }
-    if (reduceMotion) { draw(); return; }
-    if (!running) { running = true; draw(); }
-  }
-  addEventListener("resize", () => { if (running) size(); });
-  onEnter.letter = start;
-  onLeave.letter = () => { running = false; };
+  onLeave.letter = () => { clearTimeout(timer); modal.hidden = true; };
 })();
 
-/* ---------- 8b. words flying through space ---------- */
-(function wordsTunnel() {
+/* ---------- 8b. galaxy of words: every word flies at her like a shooting star ---------- */
+(function wordsGalaxy() {
   const cv = $("#wordsCanvas"), c = cv.getContext("2d"), sc = scenes[sceneIndex("words")];
-  const COLORS = ["#ff9fb2", "#ffd7e0", "#f3dca5", "#e0b968", "#fcf4e4"];
-  const FONT = '"Cormorant Garamond", "Noto Serif Gujarati", "Noto Serif KR", Georgia, serif';
-  let W, H, dpr, items = [], running = false, last = 0, speed = 1, boost = false, shown = false, t0 = 0;
+  const PINK = ["#ff7fa8", "#ff9fbf", "#ffc3d5", "#ffe3ec", "#ffffff"];
+  const SERIF = '"Playfair Display", "Cormorant Garamond", Georgia, serif';
+  const ITAL = new Set(["smart", "Darling", "forgiving"]);       // italic, like on the cover
+  const FAR = 6;
+  let W, H, dpr, items = [], stars = [], meteors = [], running = false, last = 0, speed = 1, boost = false, shown = false;
+  let t0 = 0, heroAt = 0, heroIdx = 0, meteorAt = 0;
+  const rnd = (a, b) => a + Math.random() * (b - a);
   function size() { dpr = Math.min(devicePixelRatio || 1, 2); W = cv.width = cv.offsetWidth * dpr; H = cv.height = cv.offsetHeight * dpr; }
   function spawn(z) {
-    const big = Math.random() < 0.12;
-    return {
-      t: CONTENT.words[Math.floor(Math.random() * CONTENT.words.length)],
-      x: (Math.random() - 0.5) * (big ? 0.6 : 2.2), y: (Math.random() - 0.5) * (big ? 0.5 : 1.6),
-      z: z ?? 1 + Math.random() * 6, size: big ? 1.6 : 0.6 + Math.random() * 0.5,
-      col: COLORS[Math.floor(Math.random() * COLORS.length)], bold: big || Math.random() < 0.3
-    };
+    let x, y;
+    do { x = rnd(-1.6, 1.6); y = rnd(-1.2, 1.2); } while (Math.abs(x) < 0.16 && Math.abs(y) < 0.12);
+    return { t: CONTENT.words[Math.floor(Math.random() * CONTENT.words.length)], x, y, z: z ?? rnd(0.5, FAR),
+             size: rnd(0.5, 0.95), col: PINK[Math.floor(Math.random() * PINK.length)], tilt: rnd(-0.16, 0.16), hero: false };
   }
+  function hero() {
+    const t = CONTENT.heroWords[heroIdx++ % CONTENT.heroWords.length];
+    items.push({ t, x: rnd(-0.1, 0.1), y: rnd(-0.07, 0.09), z: FAR, size: 1.9, col: heroIdx % 2 ? "#ffb3c9" : "#ffffff", tilt: rnd(-0.06, 0.06), hero: true });
+  }
+  const proj = (x, y, z, f) => [W / 2 + x * f / z, H / 2 + y * f / z];
   function frame(now) {
     if (!running) return;
     const dt = Math.min(50, now - (last || now)) / 1000; last = now;
-    speed += ((boost ? 4.2 : 1) - speed) * Math.min(1, dt * 3);
+    speed += ((boost ? 3.4 : 1) - speed) * Math.min(1, dt * 3);
     c.clearRect(0, 0, W, H);
-    const f = Math.min(W, H) * 0.9, cx = W / 2, cy = H / 2;
-    items.sort((a, b) => b.z - a.z);
-    for (const it of items) {
-      it.z -= dt * 0.9 * speed;
-      if (it.z < 0.12) { Object.assign(it, spawn(7)); continue; }
-      const px = cx + it.x * f / it.z, py = cy + it.y * f / it.z;
-      const fs = Math.min(150 * dpr, 34 * dpr * it.size / it.z);
-      if (fs < 3 * dpr) continue;
-      const a = Math.min(1, (7 - it.z) / 2.5) * Math.min(1, (it.z - 0.12) / 0.6);
-      c.globalAlpha = Math.max(0, a);
-      c.font = `${it.bold ? 700 : 500} ${fs}px ${FONT}`;
-      c.textAlign = "center"; c.textBaseline = "middle";
-      if (fs > 40 * dpr) { c.shadowColor = "rgba(255,120,160,.8)"; c.shadowBlur = 24 * dpr; } else c.shadowBlur = 0;
-      c.fillStyle = it.col; c.fillText(it.t, px, py);
+    const f = Math.min(W, H) * 0.75;
+
+    // background stars
+    c.globalCompositeOperation = "lighter";
+    for (const s of stars) {
+      s.z -= dt * 0.45 * speed; if (s.z < 0.2) { s.z = FAR; s.x = rnd(-2, 2); s.y = rnd(-2, 2); }
+      const [px, py] = proj(s.x, s.y, s.z, f), r = Math.max(0.5, 1.6 / s.z) * dpr;
+      c.globalAlpha = Math.min(1, (FAR - s.z) / 2) * 0.8; c.fillStyle = "#ffd9e6"; c.fillRect(px, py, r, r);
     }
-    c.globalAlpha = 1; c.shadowBlur = 0;
-    if (!shown && now - t0 > 5000) { shown = true; show($("#wordsNext")); $("#wordsHint").textContent = "Every word here is for you 🤍"; }
+    // a plain shooting star across the sky every so often
+    if (now - meteorAt > rnd(700, 1500)) {
+      meteorAt = now;
+      const fromRight = Math.random() < 0.5;
+      meteors.push({ x: fromRight ? rnd(W * 0.3, W * 1.1) : rnd(-W * 0.1, W * 0.7), y: rnd(-H * 0.1, H * 0.4),
+                     vx: (fromRight ? -1 : 1) * rnd(0.9, 1.4) * W, vy: rnd(0.45, 0.8) * W, life: 1 });
+    }
+    for (let k = meteors.length - 1; k >= 0; k--) {
+      const m = meteors[k]; m.x += m.vx * dt; m.y += m.vy * dt; m.life -= dt * 1.4;
+      if (m.life <= 0) { meteors.splice(k, 1); continue; }
+      const tx = m.x - m.vx * 0.12, ty = m.y - m.vy * 0.12;
+      const g = c.createLinearGradient(tx, ty, m.x, m.y);
+      g.addColorStop(0, "rgba(255,160,200,0)"); g.addColorStop(1, `rgba(255,235,245,${m.life})`);
+      c.globalAlpha = 1; c.strokeStyle = g; c.lineWidth = 1.6 * dpr; c.lineCap = "round";
+      c.beginPath(); c.moveTo(tx, ty); c.lineTo(m.x, m.y); c.stroke();
+    }
+
+    if (now - heroAt > 3400) { heroAt = now; hero(); }
+    for (let k = items.length - 1; k >= 0; k--) {
+      const it = items[k];
+      it.z -= dt * (it.hero ? 1.5 : 0.85) * speed;
+      if (it.z < 0.18) { if (it.hero) items.splice(k, 1); else Object.assign(it, spawn(FAR)); }
+    }
+    items.sort((a, b) => b.z - a.z);
+
+    // tails first, so the words sit on top of their own glow
+    const tail = 0.55 + 0.25 * speed;
+    for (const it of items) {
+      const fs = Math.min(it.hero ? 120 : 64, 26 * it.size / it.z) * dpr;
+      if (fs < 6 * dpr) continue;
+      const a = Math.min(1, (FAR - it.z) / 1.8) * Math.min(1, (it.z - 0.18) / 0.45);
+      if (a <= 0.03) continue;
+      const [px, py] = proj(it.x, it.y, it.z, f), [qx, qy] = proj(it.x, it.y, it.z + tail * (it.hero ? 1.4 : 1), f);
+      const g = c.createLinearGradient(qx, qy, px, py);
+      g.addColorStop(0, "rgba(255,90,150,0)");
+      g.addColorStop(0.7, `rgba(255,120,170,${0.35 * a})`);
+      g.addColorStop(1, `rgba(255,225,238,${0.9 * a})`);
+      c.globalAlpha = 1; c.strokeStyle = g; c.lineCap = "round";
+      c.lineWidth = Math.max(1.2 * dpr, fs * (it.hero ? 0.32 : 0.22));
+      c.beginPath(); c.moveTo(qx, qy); c.lineTo(px, py); c.stroke();
+      it._p = [px, py, fs, a];
+    }
+    c.globalCompositeOperation = "source-over";
+    c.textAlign = "center"; c.textBaseline = "middle";
+    for (const it of items) {
+      if (!it._p) continue;
+      const [px, py, fs, a] = it._p; it._p = null;
+      c.save();
+      c.translate(px, py); c.rotate(it.tilt);
+      c.globalAlpha = a;
+      c.font = `${ITAL.has(it.t) ? "italic " : ""}${it.hero || it.t === it.t.toUpperCase() ? 700 : 600} ${fs}px ${SERIF}`;
+      if (fs > 14 * dpr) { c.shadowColor = "rgba(255,95,150,.9)"; c.shadowBlur = Math.min(28, fs / dpr * 0.5) * dpr; }
+      c.fillStyle = it.col; c.fillText(it.t, 0, 0);
+      c.restore();
+    }
+    c.globalAlpha = 1;
+    if (!shown && now - t0 > 7000) { shown = true; show($("#wordsNext")); $("#wordsHint").textContent = "Every word here is you 🤍"; }
     requestAnimationFrame(frame);
   }
   function start() {
     size();
-    if (!items.length) items = Array.from({ length: innerWidth < 600 ? 34 : 48 }, () => spawn());
+    const mob = innerWidth < 600;
+    if (!items.length) items = Array.from({ length: mob ? 60 : 95 }, () => spawn());
+    if (!stars.length) stars = Array.from({ length: mob ? 80 : 140 }, () => ({ x: rnd(-2, 2), y: rnd(-2, 2), z: rnd(0.3, FAR) }));
     if (reduceMotion) {
-      c.textAlign = "center"; c.fillStyle = "#ffd7e0";
-      CONTENT.words.slice(0, 8).forEach((w, i) => { c.font = `600 ${22 * dpr}px ${FONT}`; c.fillText(w, W / 2, H * (0.2 + i * 0.08)); });
+      c.textAlign = "center"; c.fillStyle = "#ffc3d5";
+      CONTENT.words.slice(0, 9).forEach((w, i) => { c.font = `600 ${22 * dpr}px ${SERIF}`; c.fillText(w, W / 2, H * (0.15 + i * 0.08)); });
       show($("#wordsNext")); return;
     }
-    running = true; last = 0; t0 = performance.now(); requestAnimationFrame(frame);
+    running = true; last = 0; t0 = heroAt = meteorAt = performance.now(); hero(); requestAnimationFrame(frame);
   }
   sc.addEventListener("pointerdown", e => { if (!e.target.closest("button")) boost = true; });
   addEventListener("pointerup", () => boost = false);
