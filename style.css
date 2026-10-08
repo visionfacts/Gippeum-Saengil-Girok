@@ -1062,3 +1062,69 @@ body.locked .prelude-tap{animation-play-state:paused}
 .memory-card span{font-size:1.08rem;line-height:1.45}
 @media (max-height:680px){.memory-card{width:min(64vw,240px)}}
 @media (prefers-reduced-motion:reduce){.ufo.fly{display:none}}
+
+/* =========================================================
+   Phone safety: keep content reachable on short screens
+   (in-app browsers like WhatsApp/Instagram have less height)
+   ========================================================= */
+.scene{justify-content:flex-start}
+.scene::before,.scene::after{content:"";flex:1 0 0;min-height:0;pointer-events:none}
+.scene::before{margin-bottom:calc(-1 * clamp(12px,2.4vh,22px))}
+.scene::after{margin-top:calc(-1 * clamp(12px,2.4vh,22px))}
+@media (max-height:640px){.scene::before{margin-bottom:-10px}.scene::after{margin-top:-10px}}
+.lock{display:flex;flex-direction:column}
+.lock-inner{margin:auto}
+.memory{justify-content:flex-start;overflow-y:auto}
+.memory::before,.memory::after{content:"";flex:1 0 0;margin:-10px 0}
+html,body{height:100%;height:100dvh}
+
+/* =========================================================
+   A reel of Khushali: photos running along a looping strip
+   ========================================================= */
+[data-scene="reel"]{
+  background:
+    radial-gradient(80% 60% at 50% 40%,#fffaf0 0%,#fbf0dc 60%,#efdcbc 100%);
+  color:var(--ink);
+}
+[data-scene="reel"] .hint{color:var(--choc-2)}
+.reel-head{display:flex;flex-direction:column;align-items:center;line-height:1}
+.reel-small{margin:0;font-weight:600;font-size:clamp(1.3rem,4.4vw,1.9rem);color:var(--ink);letter-spacing:.01em}
+.reel-name{
+  margin:0;font-family:var(--script);font-weight:400;
+  font-size:clamp(3.6rem,15vw,6.4rem);line-height:1.12;padding:0 .12em;color:var(--crimson);
+}
+.reel-sub{margin:2px 0 0;font-family:var(--hand);font-size:1.45rem;color:var(--gold-deep)}
+.reel{
+  position:relative;width:calc(100% + 40px);max-width:1200px;
+  height:min(52vh,460px);flex:0 0 auto;isolation:isolate;z-index:0;
+}
+@media (orientation:portrait){.reel{height:min(50vh,430px)}}
+.reel-thread{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.reel-thread path{fill:none;stroke:#2a0b0f;stroke-width:calc(var(--fw,70px) * 1.42);stroke-linejoin:round;stroke-linecap:butt;opacity:.92}
+.frame{
+  position:absolute;left:0;top:0;
+  width:var(--fw,70px);aspect-ratio:4/5;padding:0;
+  background:#f6efe2;border:3px solid #f6efe2;border-radius:2px;
+  box-shadow:0 2px 6px rgba(0,0,0,.35);
+  will-change:transform;
+}
+.frame img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.05) brightness(1.02);transition:filter .4s}
+.frame:hover img,.frame:focus-visible img{filter:none}
+.frame:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.reel-thread{filter:drop-shadow(0 10px 14px rgba(60,20,10,.25))}
+
+.peek{
+  position:fixed;inset:0;z-index:30;
+  display:flex;flex-direction:column;align-items:center;gap:18px;overflow-y:auto;
+  padding:72px 20px calc(env(safe-area-inset-bottom,0px) + 40px);
+  background:rgba(30,6,10,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+}
+.peek::before,.peek::after{content:"";flex:1 0 0;margin:-9px 0}
+.peek.in .peek-card{animation:memIn .55s var(--ease-spring)}
+.peek-card{margin:0;width:min(78vw,320px);padding:10px 10px 12px;background:var(--paper);transform:rotate(-2deg);box-shadow:0 24px 50px rgba(0,0,0,.55)}
+.peek-card img{width:100%;aspect-ratio:4/5;object-fit:cover}
+.peek-card figcaption{padding-top:8px;font-family:var(--hand);font-size:1.4rem;color:var(--gold-deep);text-align:center}
+@media (max-height:680px){.peek-card{width:min(62vw,240px)}}
+
+/* Phones: no double-tap zoom on buttons, so taps like "1, 1" both register */
+button,.keypad button,.frame,.star{touch-action:manipulation;-webkit-user-select:none;user-select:none}
