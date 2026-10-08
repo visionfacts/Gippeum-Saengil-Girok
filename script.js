@@ -10,6 +10,21 @@ const CONTENT = {
   // A reel of 22 photos that runs along a looping strip
   reel: Array.from({ length: 22 }, (_, i) => `images/reel${String(i + 1).padStart(2, "0")}.jpg`),
 
+  // Say cheese: the camera prints these, one per tap
+  snaps: [
+    { img: "images/snap1.jpg", note: "Felt too pretty ✨" },
+    { img: "images/snap2.jpg", note: "Certified cutie 🌸" },
+    { img: "images/snap3.jpg", note: "Main character energy 🎬" }
+  ],
+
+  // Flip & match: 6 photos, each appears twice
+  match: ["images/reel05.jpg", "images/reel07.jpg", "images/reel18.jpg", "images/reel19.jpg", "images/reel03.jpg", "images/reel10.jpg"],
+
+  // Words that fly through space (keep them short)
+  words: ["Happy Birthday", "Khushali", "22 ✨", "You mean so much to me", "Best friend forever", "Forever 🤍",
+          "My favourite human", "Main character", "생일 축하해", "જન્મદિવસની શુભકામના", "Love you 👽", "Stay this happy",
+          "Fake-smile detector", "Always here", "Happy 22nd", "Dati 🤍 Khushali"],
+
   // The Alien's star map: 6 stars that draw a heart. Change titles, text or photos freely.
   stars: [
     { title: "The first wish", img: "images/star1.jpg", text: "One birthday message, one month before board exams. Best timing of my life." },
@@ -777,6 +792,43 @@ $("#introNext").addEventListener("click", next);
   onLeave.stars = () => { running = false; modal.hidden = true; };
 })();
 
+/* ---------- 4d. say cheese ---------- */
+(function camera() {
+  const cam = $("#cam"), prints = $("#prints"), hint = $("#camHint"), flash = $("#camFlash");
+  const S = CONTENT.snaps;
+  let shot = 0, busy = false;
+  function sfxShutter() {
+    const c = ctx(); if (!c) return;
+    const len = c.sampleRate * 0.08, buf = c.createBuffer(1, len, c.sampleRate), d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (i < len * 0.3 ? 1 : Math.pow(1 - i / len, 2));
+    const src = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
+    f.type = "highpass"; f.frequency.value = 2200; g.gain.value = 0.8;
+    src.buffer = buf; src.connect(f).connect(g).connect(c.destination); src.start();
+  }
+  cam.addEventListener("click", async () => {
+    if (busy || shot >= S.length) return;
+    busy = true;
+    const s = S[shot];
+    sfxShutter();
+    cam.classList.remove("snap"); cam.offsetWidth; cam.classList.add("snap");
+    flash.classList.remove("go"); flash.offsetWidth; flash.classList.add("go");
+    await wait(260);
+    [...prints.children].forEach((p, i, a) => p.style.setProperty("--r", `${(a.length - i) % 2 ? -7 : 6}deg`));
+    const p = document.createElement("figure");
+    p.className = "print";
+    p.innerHTML = `<img src="${s.img}" alt=""><figcaption>${s.note}</figcaption>`;
+    prints.appendChild(p);
+    requestAnimationFrame(() => p.classList.add("out"));
+    await wait(1400);
+    p.classList.add("dev");
+    shot++;
+    hint.textContent = shot < S.length ? `One more! ${S.length - shot} left 📸` : "Three for your album 🤍";
+    if (shot >= S.length) { cam.classList.add("done"); confetti(...centerOf(prints), 100); await wait(1600); show($("#camNext")); }
+    busy = false;
+  });
+  $("#camNext").addEventListener("click", next);
+})();
+
 /* ---------- 5. voice / song ---------- */
 const voice = $("#voiceAudio");
 (function voicePlayer() {
@@ -847,6 +899,48 @@ const voice = $("#voiceAudio");
   });
   $("#momentsNext").addEventListener("click", next);
   layout();
+})();
+
+/* ---------- 6b. flip & match ---------- */
+(function match() {
+  const grid = $("#match"), movesEl = $("#matchMoves"), hint = $("#matchHint");
+  let open = [], moves = 0, pairs = 0, lock = false, built = false;
+  function build() {
+    built = true;
+    const deck = CONTENT.match.flatMap((src, i) => [{ src, i }, { src, i }]);
+    for (let k = deck.length - 1; k > 0; k--) { const j = Math.floor(Math.random() * (k + 1)); [deck[k], deck[j]] = [deck[j], deck[k]]; }
+    deck.forEach((c, k) => {
+      const b = document.createElement("button");
+      b.className = "mcard"; b.dataset.i = c.i;
+      b.setAttribute("aria-label", `Card ${k + 1}`);
+      b.innerHTML = `<span class="mcard-in"><span class="mcard-back">K<i>♥</i>D</span><span class="mcard-front"><img src="${c.src}" alt="" draggable="false"></span></span>`;
+      b.addEventListener("click", () => flip(b));
+      grid.appendChild(b);
+    });
+  }
+  async function flip(b) {
+    if (lock || b.classList.contains("up")) return;
+    ctx(); b.classList.add("up"); open.push(b);
+    if (open.length < 2) return;
+    moves++; movesEl.textContent = `Moves: ${moves}`;
+    const [a, c] = open; open = [];
+    if (a.dataset.i === c.dataset.i) {
+      pairs++; sfxPop();
+      a.classList.add("won"); c.classList.add("won");
+      a.disabled = c.disabled = true;
+      if (pairs === CONTENT.match.length) {
+        await wait(400);
+        sfxChime(); confetti(...centerOf(grid), 180);
+        hint.textContent = `All matched in ${moves} moves! You know us too well 🤍`;
+        await wait(900); show($("#matchNext"));
+      } else hint.textContent = `${CONTENT.match.length - pairs} pairs to go`;
+    } else {
+      lock = true; await wait(850);
+      a.classList.remove("up"); c.classList.remove("up"); lock = false;
+    }
+  }
+  $("#matchNext").addEventListener("click", next);
+  onEnter.match = () => { if (!built) build(); };
 })();
 
 /* ---------- 7. trailer ---------- */
@@ -987,9 +1081,94 @@ const voice = $("#voiceAudio");
   onLeave.letter = () => { running = false; };
 })();
 
+/* ---------- 8b. words flying through space ---------- */
+(function wordsTunnel() {
+  const cv = $("#wordsCanvas"), c = cv.getContext("2d"), sc = scenes[sceneIndex("words")];
+  const COLORS = ["#ff9fb2", "#ffd7e0", "#f3dca5", "#e0b968", "#fcf4e4"];
+  const FONT = '"Cormorant Garamond", "Noto Serif Gujarati", "Noto Serif KR", Georgia, serif';
+  let W, H, dpr, items = [], running = false, last = 0, speed = 1, boost = false, shown = false, t0 = 0;
+  function size() { dpr = Math.min(devicePixelRatio || 1, 2); W = cv.width = cv.offsetWidth * dpr; H = cv.height = cv.offsetHeight * dpr; }
+  function spawn(z) {
+    const big = Math.random() < 0.12;
+    return {
+      t: CONTENT.words[Math.floor(Math.random() * CONTENT.words.length)],
+      x: (Math.random() - 0.5) * (big ? 0.6 : 2.2), y: (Math.random() - 0.5) * (big ? 0.5 : 1.6),
+      z: z ?? 1 + Math.random() * 6, size: big ? 1.6 : 0.6 + Math.random() * 0.5,
+      col: COLORS[Math.floor(Math.random() * COLORS.length)], bold: big || Math.random() < 0.3
+    };
+  }
+  function frame(now) {
+    if (!running) return;
+    const dt = Math.min(50, now - (last || now)) / 1000; last = now;
+    speed += ((boost ? 4.2 : 1) - speed) * Math.min(1, dt * 3);
+    c.clearRect(0, 0, W, H);
+    const f = Math.min(W, H) * 0.9, cx = W / 2, cy = H / 2;
+    items.sort((a, b) => b.z - a.z);
+    for (const it of items) {
+      it.z -= dt * 0.9 * speed;
+      if (it.z < 0.12) { Object.assign(it, spawn(7)); continue; }
+      const px = cx + it.x * f / it.z, py = cy + it.y * f / it.z;
+      const fs = Math.min(150 * dpr, 34 * dpr * it.size / it.z);
+      if (fs < 3 * dpr) continue;
+      const a = Math.min(1, (7 - it.z) / 2.5) * Math.min(1, (it.z - 0.12) / 0.6);
+      c.globalAlpha = Math.max(0, a);
+      c.font = `${it.bold ? 700 : 500} ${fs}px ${FONT}`;
+      c.textAlign = "center"; c.textBaseline = "middle";
+      if (fs > 40 * dpr) { c.shadowColor = "rgba(255,120,160,.8)"; c.shadowBlur = 24 * dpr; } else c.shadowBlur = 0;
+      c.fillStyle = it.col; c.fillText(it.t, px, py);
+    }
+    c.globalAlpha = 1; c.shadowBlur = 0;
+    if (!shown && now - t0 > 5000) { shown = true; show($("#wordsNext")); $("#wordsHint").textContent = "Every word here is for you 🤍"; }
+    requestAnimationFrame(frame);
+  }
+  function start() {
+    size();
+    if (!items.length) items = Array.from({ length: innerWidth < 600 ? 34 : 48 }, () => spawn());
+    if (reduceMotion) {
+      c.textAlign = "center"; c.fillStyle = "#ffd7e0";
+      CONTENT.words.slice(0, 8).forEach((w, i) => { c.font = `600 ${22 * dpr}px ${FONT}`; c.fillText(w, W / 2, H * (0.2 + i * 0.08)); });
+      show($("#wordsNext")); return;
+    }
+    running = true; last = 0; t0 = performance.now(); requestAnimationFrame(frame);
+  }
+  sc.addEventListener("pointerdown", e => { if (!e.target.closest("button")) boost = true; });
+  addEventListener("pointerup", () => boost = false);
+  addEventListener("pointercancel", () => boost = false);
+  addEventListener("resize", () => { if (running) size(); });
+  $("#wordsNext").addEventListener("click", next);
+  onEnter.words = () => requestAnimationFrame(start);
+  onLeave.words = () => { running = false; boost = false; };
+})();
+
 /* ---------- 9. last gift ---------- */
 (function lastGift() {
   const scene = scenes[sceneIndex("last")];
+  // "Catch me if you can": the gift dodges 3 times before it lets her open it
+  const gift = $("#lastGift"), hint = $("#lastHint");
+  const LINES = ["Catch me if you can 😜", "Too slow! 😆", "Almost… try again 🙈"];
+  let dodges = 0, lastDodge = 0;
+  function dodge() {
+    const now = performance.now();
+    if (now - lastDodge < 380) return;
+    lastDodge = now;
+    const r = scene.getBoundingClientRect(), g = gift.getBoundingClientRect();
+    const mx = Math.max(30, r.width / 2 - g.width / 2 - 16), my = Math.max(30, Math.min(r.height * 0.28, 200));
+    let dx, dy, cur = (gift.style.translate || "0px 0px").split(" ").map(parseFloat);
+    do { dx = (Math.random() * 2 - 1) * mx; dy = (Math.random() * 2 - 1) * my; } while (Math.hypot(dx - (cur[0] || 0), dy - (cur[1] || 0)) < 90);
+    gift.style.translate = `${dx}px ${dy}px`;
+    hint.textContent = LINES[dodges];
+    sfxPuff();
+    dodges++;
+    if (dodges >= LINES.length) setTimeout(() => { gift.style.translate = "0px 0px"; hint.textContent = "Okay okay… catch me 😅"; }, 900);
+  }
+  scene.addEventListener("click", e => {
+    if (dodges < LINES.length && e.target.closest("#lastGift")) { e.stopPropagation(); e.preventDefault(); dodge(); }
+  }, true);
+  scene.addEventListener("pointermove", e => {
+    if (e.pointerType !== "mouse" || dodges >= LINES.length) return;
+    const g = gift.getBoundingClientRect();
+    if (Math.hypot(e.clientX - (g.left + g.width / 2), e.clientY - (g.top + g.height / 2)) < g.width * 0.7) dodge();
+  });
   $("#lastGift").addEventListener("click", async e => {
     const g = e.currentTarget;
     if (g.classList.contains("is-open")) return;
