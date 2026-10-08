@@ -116,6 +116,24 @@
     <button class="btn" id="cakeNext" hidden>Continue</button>
   </section>
 
+  <!-- 3b · A reel of Khushali: photos on a looping film strip -->
+  <section class="scene" data-scene="reel">
+    <div class="reel-head">
+      <p class="reel-small">A reel of</p>
+      <h2 class="reel-name">Khushali</h2>
+      <p class="reel-sub">22 frames for 22 years 🎞️</p>
+    </div>
+    <div class="reel" id="reel">
+      <svg class="reel-thread" id="reelSvg" aria-hidden="true"><path id="reelPath"/></svg>
+    </div>
+    <p class="hint" id="reelHint">Tap any photo to see it in colour</p>
+    <button class="btn" id="reelNext" hidden>Continue</button>
+    <div class="peek" id="peek" role="dialog" aria-modal="true" aria-label="Photo" hidden>
+      <figure class="peek-card"><img id="peekImg" alt=""><figcaption id="peekCap"></figcaption></figure>
+      <button class="btn small" id="peekClose">Back to the reel</button>
+    </div>
+  </section>
+
   <!-- 4 · Our story, as a movie -->
   <section class="scene" data-scene="story">
     <p class="whisper">Now playing: the story of us</p>
