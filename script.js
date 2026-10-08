@@ -7,6 +7,9 @@ const CONTENT = {
   // Secret code on the lock screen: her birthday, 8 November → DDMM
   passcode: "0811",
 
+  // A reel of 22 photos that runs along a looping strip
+  reel: Array.from({ length: 22 }, (_, i) => `images/reel${String(i + 1).padStart(2, "0")}.jpg`),
+
   // The Alien's star map: 6 stars that draw a heart. Change titles, text or photos freely.
   stars: [
     { title: "The first wish", img: "images/star1.jpg", text: "One birthday message, one month before board exams. Best timing of my life." },
@@ -526,6 +529,92 @@ $("#introNext").addEventListener("click", next);
   $("#cakeNext").addEventListener("click", next);
 })();
 
+/* ---------- 3b. a reel of Khushali ---------- */
+(function reel() {
+  const box = $("#reel"), svg = $("#reelSvg"), path = $("#reelPath"), peek = $("#peek");
+  const N = CONTENT.reel.length;
+  let W = 0, H = 0, len = 0, gapLen = 0, frames = [], offset = 0, last = 0, running = false, paused = false, shownNext = false, fw = 0;
+
+  // A strip that drifts in from one side, ties a loop in the middle and drifts out the other
+  function buildPath() {
+    W = box.clientWidth; H = box.clientHeight;
+    const portrait = H > W * 0.9;
+    const b = portrait ? 3.3 : 2.8;                          // bigger b = bigger loop
+    const sx = W / (2 * Math.PI) * (portrait ? 1.25 : 1.12);
+    const sy = H * (portrait ? 0.4 : 0.38) / b;
+    const pts = [];
+    for (let i = 0; i <= 240; i++) {
+      const th = -Math.PI + (2 * Math.PI * i) / 240;
+      pts.push([W / 2 + (th - b * Math.sin(th)) * sx, H * 0.52 - b * Math.cos(th) * sy]);  // loop on top, tails hang low
+    }
+    const P = pts;
+    const ext = W * 0.35;
+    const first = P[0], end = P[P.length - 1];
+    let d = `M${first[0] - ext} ${first[1] + ext * 0.12} L${first[0]} ${first[1]}`;
+    for (let i = 1; i < P.length; i++) d += ` L${P[i][0].toFixed(1)} ${P[i][1].toFixed(1)}`;
+    d += ` L${end[0] + ext} ${end[1] + ext * 0.12}`;
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    path.setAttribute("d", d);
+    len = path.getTotalLength();
+    fw = Math.max(54, Math.min(92, Math.min(W, H) * 0.16));
+    box.style.setProperty("--fw", fw + "px");
+    gapLen = fw * 1.08;
+    const need = Math.ceil(len / gapLen) + 1;
+    while (frames.length < need) {
+      const i = frames.length % N, f = document.createElement("button");
+      f.className = "frame";
+      f.setAttribute("aria-label", `Photo ${i + 1}`);
+      f.innerHTML = `<img src="${CONTENT.reel[i]}" alt="" loading="lazy" draggable="false">`;
+      f.addEventListener("click", () => open(i));
+      box.appendChild(f); frames.push(f);
+    }
+    frames.forEach((f, k) => f.hidden = k >= need);
+    place();
+  }
+  function place() {
+    const active = frames.filter(f => !f.hidden), total = active.length * gapLen;
+    active.forEach((f, k) => {
+      let at = (k * gapLen + offset) % total;
+      if (at > len) { f.style.opacity = 0; return; }
+      const p = path.getPointAtLength(at), q = path.getPointAtLength(Math.min(len, at + 2));
+      const ang = Math.atan2(q.y - p.y, q.x - p.x) * 180 / Math.PI;
+      f.style.opacity = 1;
+      f.style.transform = `translate(${p.x}px,${p.y}px) translate(-50%,-50%) rotate(${ang}deg)`;
+      f.style.zIndex = Math.round(at);
+    });
+  }
+  function tick(now) {
+    if (!running) return;
+    const dt = Math.min(50, now - (last || now)); last = now;
+    if (!paused) { offset += dt * 0.045; place(); }
+    requestAnimationFrame(tick);
+  }
+  function open(i) {
+    paused = true;
+    $("#peekImg").src = CONTENT.reel[i];
+    $("#peekCap").textContent = `Frame ${i + 1} of ${N}`;
+    peek.hidden = false; peek.classList.remove("in"); peek.offsetWidth; peek.classList.add("in");
+    $("#peekClose").focus({ preventScroll: true });
+  }
+  function close() { if (peek.hidden) return; peek.hidden = true; paused = false; }
+  $("#peekClose").addEventListener("click", close);
+  peek.addEventListener("click", e => { if (e.target === peek) close(); });
+  addEventListener("keydown", e => { if (e.key === "Escape") close(); });
+  box.addEventListener("pointerenter", e => { if (e.pointerType === "mouse") paused = true; });
+  box.addEventListener("pointerleave", e => { if (e.pointerType === "mouse" && peek.hidden) paused = false; });
+  addEventListener("resize", () => { if (running) buildPath(); });
+  $("#reelNext").addEventListener("click", next);
+
+  onEnter.reel = () => {
+    requestAnimationFrame(() => {
+      buildPath();
+      if (reduceMotion) { place(); } else { running = true; last = 0; requestAnimationFrame(tick); }
+      if (!shownNext) { shownNext = true; setTimeout(() => show($("#reelNext")), 3500); }
+    });
+  };
+  onLeave.reel = () => { running = false; close(); };
+})();
+
 /* ---------- 4. story, as a movie ---------- */
 (function story() {
   const S = CONTENT.story, dots = $("#storyDots"), lines = $("#cineLines");
@@ -802,7 +891,7 @@ const voice = $("#voiceAudio");
     pageEl.classList.remove("turn-next", "turn-prev"); pageEl.offsetWidth;
     pageEl.classList.add(dir > 0 ? "turn-next" : "turn-prev");
     pageEl.innerHTML = "";
-    const bits = pages[k].split(/\n/).flatMap(line => line ? line.split(/(?<=[.!?…])\s+/) .map((t, i, a) => t + (i < a.length - 1 ? " " : "")).concat(["\n"]) : ["\n"]);
+    const bits = pages[k].split(/\n/).flatMap(line => line ? (line.match(/[^.!?…]+(?:[.!?…]+|$)\s*/g) || [line]).concat(["\n"]) : ["\n"]);
     let d = 250;
     bits.forEach(t => {
       if (t === "\n") { pageEl.appendChild(document.createElement("br")); return; }
