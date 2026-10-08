@@ -208,6 +208,27 @@
     </div>
   </section>
 
+  <!-- 4d · Say cheese: a vintage camera prints polaroids -->
+  <section class="scene" data-scene="camera">
+    <p class="whisper">Smile, birthday girl</p>
+    <h2 class="title">Say cheese 📸</h2>
+    <p class="hint" id="camHint">Tap the camera to take a photo</p>
+    <div class="cam-wrap">
+      <button class="cam" id="cam" aria-label="Take a photo">
+        <span class="cam-top"><span class="cam-flash"></span><span class="cam-view"></span><span class="cam-shutter"></span></span>
+        <span class="cam-body">
+          <span class="cam-stripe"></span>
+          <span class="cam-lens"><span></span></span>
+          <span class="cam-badge">K♥D</span>
+        </span>
+        <span class="cam-slot"></span>
+      </button>
+      <div class="prints" id="prints" aria-live="polite"></div>
+    </div>
+    <button class="btn" id="camNext" hidden>Continue</button>
+    <div class="cam-flashfx" id="camFlash" aria-hidden="true"></div>
+  </section>
+
   <!-- 5 · Voice / song -->
   <section class="scene" data-scene="voice">
     <p class="whisper">Headphones on, Khushali. No skipping.</p>
@@ -249,6 +270,16 @@
       </button>
     </div>
     <button class="btn" id="momentsNext">Continue</button>
+  </section>
+
+  <!-- 6b · Flip & match -->
+  <section class="scene" data-scene="match">
+    <p class="whisper">Quick game before the movie 🎮</p>
+    <h2 class="title">Flip &amp; match</h2>
+    <p class="hint" id="matchHint">Find the 6 pairs</p>
+    <div class="match" id="match"></div>
+    <p class="match-moves" id="matchMoves">Moves: 0</p>
+    <button class="btn" id="matchNext" hidden>Continue</button>
   </section>
 
   <!-- 7 · Trailer -->
@@ -309,6 +340,16 @@
     <div class="row">
       <button class="btn" id="letterNext" hidden>Continue</button>
     </div>
+  </section>
+
+  <!-- 8b · Words flying through space -->
+  <section class="scene" data-scene="words">
+    <canvas class="words-canvas" id="wordsCanvas" aria-hidden="true"></canvas>
+    <div class="words-overlay">
+      <p class="whisper words-hint" id="wordsHint">Press and hold to fly faster ✨</p>
+      <p class="sr-only">Happy Birthday, Khushali. You mean so much to me. Best friend forever.</p>
+    </div>
+    <button class="btn words-next" id="wordsNext" hidden>Continue</button>
   </section>
 
   <!-- 9 · One last thing -->
