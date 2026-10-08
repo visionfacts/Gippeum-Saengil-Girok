@@ -1128,3 +1128,87 @@ html,body{height:100%;height:100dvh}
 
 /* Phones: no double-tap zoom on buttons, so taps like "1, 1" both register */
 button,.keypad button,.frame,.star{touch-action:manipulation;-webkit-user-select:none;user-select:none}
+
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* =========================================================
+   Say cheese: vintage camera that prints polaroids
+   ========================================================= */
+.cam-wrap{position:relative;display:flex;flex-direction:column;align-items:center;width:min(86vw,340px)}
+.cam{
+  position:relative;z-index:2;width:min(64vw,250px);aspect-ratio:1.45/1;
+  display:block;padding:0;cursor:pointer;
+  filter:drop-shadow(0 16px 22px rgba(20,0,4,.55));
+}
+.cam-top{position:absolute;left:8%;right:8%;top:0;height:24%;border-radius:14px 14px 0 0;background:linear-gradient(#efe4cf,#d9c9aa)}
+.cam-flash{position:absolute;left:9%;top:22%;width:24%;height:56%;border-radius:4px;background:repeating-linear-gradient(90deg,#fff 0 3px,#e4e9f2 3px 6px);box-shadow:inset 0 0 0 2px #b9a98a}
+.cam-view{position:absolute;left:42%;top:26%;width:16%;height:46%;border-radius:4px;background:#1c1416;box-shadow:inset 0 0 0 2px #b9a98a}
+.cam-shutter{position:absolute;right:10%;top:-22%;width:15%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 40% 35%,#ff6b7a,var(--red) 70%);box-shadow:0 3px 0 #7d1220}
+.cam-body{position:absolute;left:0;right:0;top:20%;bottom:0;border-radius:18px;overflow:hidden;
+  background:linear-gradient(180deg,#f6eddc 0 46%,#6b3423 46% 100%)}
+.cam-stripe{position:absolute;left:0;right:0;top:40%;height:12%;background:linear-gradient(90deg,var(--crimson) 0 33%,var(--gold) 33% 66%,var(--wine) 66%)}
+.cam-lens{position:absolute;left:50%;top:50%;width:46%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;
+  background:radial-gradient(circle,#2b2b33 0 30%,#0e0d12 31% 52%,#3b3b44 53% 58%,#16151b 59%);
+  box-shadow:0 0 0 6px #e8dcc4,0 0 0 8px #b9a98a,0 6px 12px rgba(0,0,0,.45)}
+.cam-lens span{position:absolute;left:30%;top:24%;width:18%;height:14%;border-radius:50%;background:rgba(255,255,255,.55);transform:rotate(-30deg)}
+.cam-badge{position:absolute;right:8%;bottom:10%;font-family:var(--script);font-size:1rem;color:var(--gold-soft)}
+.cam-slot{position:absolute;left:18%;right:18%;bottom:6%;height:4%;border-radius:3px;background:#1c0a08}
+.cam.snap{animation:camSnap .35s}
+@keyframes camSnap{30%{transform:scale(.96) rotate(-1deg)}70%{transform:scale(1.02)}}
+.cam.done .cam-shutter{background:#9a8d77;box-shadow:0 3px 0 #6d634f}
+.cam:not(.done) .cam-shutter{animation:pulse 1.6s ease-in-out infinite}
+.cam-flashfx{position:fixed;inset:0;z-index:35;background:#fff;opacity:0;pointer-events:none}
+.cam-flashfx.go{animation:camFlash .55s ease-out}
+@keyframes camFlash{0%{opacity:0}12%{opacity:.95}100%{opacity:0}}
+.prints{position:relative;z-index:1;width:min(52vw,200px);aspect-ratio:.82;margin-top:-26px}
+.print{
+  position:absolute;inset:0;margin:0;padding:8px 8px 0;background:#fbf6ec;
+  box-shadow:0 10px 24px rgba(20,0,4,.45);
+  transform:translateY(-70%) rotate(0);clip-path:inset(70% 0 0 0);
+  transition:transform 1.3s cubic-bezier(.2,.7,.2,1),clip-path 1.3s cubic-bezier(.2,.7,.2,1),rotate .6s var(--ease-spring);
+  rotate:var(--r,0deg);
+}
+.print.out{transform:translateY(0);clip-path:inset(-20% -20% -20% -20%)}
+.print img{width:100%;aspect-ratio:1;object-fit:cover;filter:brightness(.25) saturate(0) contrast(.7) sepia(.4);transition:filter 3.2s ease}
+.print.dev img{filter:none}
+.print figcaption{padding:8px 2px 10px;font-family:var(--hand);font-size:1.25rem;color:var(--ink);text-align:center;line-height:1}
+@media (max-height:700px){.cam{width:min(52vw,200px)}.prints{width:min(40vw,160px)}}
+
+/* =========================================================
+   Flip & match
+   ========================================================= */
+.match{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(8px,2vw,12px);width:min(92vw,440px);perspective:900px}
+@media (min-width:700px) and (min-height:760px){.match{width:min(70vw,520px)}}
+@media (max-height:700px){.match{width:min(80vw,52vh*1.0)}}
+.mcard{position:relative;aspect-ratio:3/4;padding:0;display:block}
+.mcard-in{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .5s var(--ease-out)}
+.mcard.up .mcard-in{transform:rotateY(180deg)}
+.mcard-back,.mcard-front{position:absolute;inset:0;border-radius:10px;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden}
+.mcard-back{
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--script);font-size:clamp(1rem,4vw,1.4rem);color:var(--gold-soft);
+  background:
+    radial-gradient(circle at 50% 50%,rgba(224,185,104,.22),transparent 60%),
+    repeating-linear-gradient(45deg,rgba(255,255,255,.04) 0 6px,transparent 6px 12px),
+    linear-gradient(160deg,var(--crimson),var(--wine));
+  box-shadow:inset 0 0 0 2px rgba(224,185,104,.55),0 6px 14px rgba(20,0,4,.4);
+}
+.mcard-back i{font-style:normal;font-family:var(--serif);font-size:.7em;margin:0 1px}
+.mcard-front{transform:rotateY(180deg);background:var(--paper);padding:4px;box-shadow:0 6px 14px rgba(20,0,4,.4)}
+.mcard-front img{width:100%;height:100%;object-fit:cover;border-radius:6px}
+.mcard.won .mcard-front{box-shadow:0 0 0 3px var(--gold),0 0 22px rgba(255,214,140,.7)}
+.mcard:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:10px}
+.match-moves{margin:0;font-family:var(--hand);font-size:1.3rem;color:var(--gold-soft)}
+
+/* =========================================================
+   Words flying through space
+   ========================================================= */
+[data-scene="words"]{background:#0a0208;overflow:hidden}
+.words-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;touch-action:none}
+.words-overlay{position:relative;z-index:1;margin-top:auto;pointer-events:none}
+.words-hint{text-shadow:0 2px 12px rgba(0,0,0,.8)}
+.words-next{position:relative;z-index:1}
+[data-scene="words"]::after{flex:0 0 calc(env(safe-area-inset-bottom,0px) + 40px)}
+
+/* "Catch me if you can" gift */
+#lastGift{transition:translate .45s var(--ease-spring)}
