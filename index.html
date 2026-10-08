@@ -60,8 +60,18 @@
     </button>
   </section>
 
+  <!-- 0a · Words flying through space (first thing after the code) -->
+  <section class="scene" data-scene="words">
+    <canvas class="words-canvas" id="wordsCanvas" aria-hidden="true"></canvas>
+    <div class="words-overlay">
+      <p class="whisper words-hint" id="wordsHint">Press and hold to fly faster ✨</p>
+      <p class="sr-only">Happy Birthday, Khushali. You mean so much to me. Best friend forever.</p>
+    </div>
+    <button class="btn words-next" id="wordsNext" hidden>Continue</button>
+  </section>
+
   <!-- 0b · 21 burns into 22 -->
-  <section class="scene" data-scene="age">
+  <section class="scene" data-scene="age" data-skip="1">
     <p class="whisper age-line" id="ageLine1">21 was a beautiful chapter…</p>
     <canvas class="age-canvas" id="ageCanvas" role="img" aria-label="The number 21 burns away and becomes 22"></canvas>
     <p class="whisper age-line" id="ageLine2">…but 22 is all yours, Khushali ✨</p>
@@ -340,16 +350,6 @@
     <div class="row">
       <button class="btn" id="letterNext" hidden>Continue</button>
     </div>
-  </section>
-
-  <!-- 8b · Words flying through space -->
-  <section class="scene" data-scene="words">
-    <canvas class="words-canvas" id="wordsCanvas" aria-hidden="true"></canvas>
-    <div class="words-overlay">
-      <p class="whisper words-hint" id="wordsHint">Press and hold to fly faster ✨</p>
-      <p class="sr-only">Happy Birthday, Khushali. You mean so much to me. Best friend forever.</p>
-    </div>
-    <button class="btn words-next" id="wordsNext" hidden>Continue</button>
   </section>
 
   <!-- 9 · One last thing -->
