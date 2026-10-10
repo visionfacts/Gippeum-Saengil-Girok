@@ -357,7 +357,7 @@ beads.hidden = true;
     tries++;
     sfxPuff();
     el.classList.remove("is-wrong"); el.offsetWidth; el.classList.add("is-wrong");
-    hint.textContent = tries === 1 ? "Not quite. Clue: the day the world got you" : "Your birthday, as DD MM 😉";
+    hint.textContent = tries === 1 ? "Not quite. Check the maths again 🧮" : tries === 2 ? "Did you add the 0 in front? 😉" : "Psst… it is also your birthday, DD MM 🎂";
     await wait(500);
     typed = ""; paint(); busy = false;
   }
