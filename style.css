@@ -1386,3 +1386,16 @@ button,.keypad button,.frame,.star{touch-action:manipulation;-webkit-user-select
 @media (max-height:680px){.mview-card{width:min(62vw,250px)}}
 [data-scene="moments"]::before,[data-scene="moments"]::after{display:none}
 [data-scene="moments"]{justify-content:space-between;padding-top:calc(env(safe-area-inset-top,0px) + 64px);padding-bottom:calc(env(safe-area-inset-bottom,0px) + 44px)}
+
+/* Maths puzzle on the lock screen */
+.lock-puzzle{
+  width:min(88vw,360px);padding:12px 16px 14px;border-radius:14px;text-align:center;
+  background:rgba(255,243,215,.08);border:1px dashed rgba(224,185,104,.55);
+}
+.lock-puzzle p{margin:0}
+.lp-top{font-family:var(--hand);font-size:1.25rem;color:var(--gold-soft)}
+.lp-sum{margin:6px 0 4px !important;font-family:var(--serif);font-weight:700;font-size:clamp(1.35rem,5.6vw,1.7rem);letter-spacing:.02em;color:var(--ivory);white-space:nowrap}
+.lp-note{font-size:1rem;line-height:1.35;color:rgba(252,244,228,.85)}
+.lp-note b{color:var(--gold);font-size:1.15em}
+@media (max-height:700px){.lock-puzzle{padding:8px 12px 10px}.lp-sum{font-size:1.25rem}.lp-note{font-size:.92rem}}
+@media (max-height:700px){.lock-seal{display:none}.lock-inner{gap:8px}.keypad{gap:8px 18px}}
