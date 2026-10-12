@@ -26,12 +26,12 @@ const CONTENT = {
   // Galaxy of words (from "The Khushali" cover). "hero" lines fly big through the middle.
   words: ["THE KHUSHALI", "Proof That Soulmates Exist", "smart", "PEACE", "YOU ARE THE MOST IMPORTANT",
           "Sportive", "Irreplaceable", "LOYAL", "HONEST", "forgiving", "Secret keeper", "Non judgemental",
-          "Darling", "15 Reasons Why She's", "1314k8", "Happy Birthday"],
+          "Darling", "15 Reasons Why She's Irreplaceable", "1314k8", "Happy Birthday"],
   heroWords: ["THE KHUSHALI", "YOU ARE THE MOST IMPORTANT", "1314k8", "Proof That Soulmates Exist", "Happy Birthday", "Darling"],
 
   // The Alien's star map: 6 stars that draw a heart. Change titles, text or photos freely.
   stars: [
-    { title: "The first wish", img: "images/star1.jpg", text: "One birthday message, one month before board exams. Best timing of my life." },
+    { title: "Where it began", img: "images/star1.jpg", text: "Your birthday in 12th. I wished you, and you acted like you had never seen me before. 😂 Best beginning ever." },
     { title: "Alien", img: "images/star2.jpg", text: "You called me different, then made it my favourite name. 👽" },
     { title: "Fake-smile detector", img: "images/star3.jpg", text: "I can fool the whole world with a smile. Never you. Not even on a call." },
     { title: "Forever", img: "images/star4.jpg", text: "Some friendships fade with time. Ours just keeps getting louder." },
@@ -63,25 +63,25 @@ const CONTENT = {
 
   story: [
     { img: "images/m01.jpg", font: "f-cinzel", title: "Where it all began", lines: [
-      "12th standard. Board exams, one month away.",
-      "Everyone was drowning in books and stress…",
-      "…and I sent you a birthday wish.",
-      "Just one message. I had no idea it was the start of my favourite story."
+      "Your birthday, back in 12th standard. That's the day I really noticed you.",
+      "I don't know how, but you instantly felt like my own.",
+      "Then we ran into each other, I wished you a happy birthday…",
+      "…and you looked at me like you had no idea who I was. 😂 Still my favourite beginning."
     ]},
     { img: "images/scene2.jpg", pos: "50% 40%", font: "f-play", title: "The Alien", lines: [
       { who: "Khushali", t: "“તું શું છો યાર! કંઈક અલગ જ છો… સાચે તું તો Alien જ છે!”" },
       "Anyone else would have called it weird.",
-      "She turned it into the sweetest nickname I have ever had.",
-      "Because she loves exactly the parts of me that don't fit anywhere else. 👽"
+      "You turned it into the sweetest nickname I have ever had.",
+      "Because you love exactly the parts of me that don't fit anywhere else. 👽"
     ]},
-    { img: "images/m09.jpg", font: "f-type", title: "Her superpower", lines: [
+    { img: "images/m09.jpg", font: "f-type", title: "Your superpower", lines: [
       "I can fool the whole world with a smile.",
-      "Not her. Not even over a phone call.",
+      "Not you. Not even over a phone call.",
       { who: "Khushali", t: "“Dati, આ તું fake ના હસજે! Life માં problem હોય તો મને કહે!”" },
-      "Some people listen to your words. She hears the ones you never say."
+      "Some people listen to my words. You hear the ones I never say."
     ]},
     { img: "images/m12.jpg", font: "f-hand", title: "Still us", lines: [
-      "Years later, she is still the first person I tell everything.",
+      "Years later, you are still the first person I tell everything.",
       "Good news, bad days, 2am thoughts, random gossip.",
       "Some friendships fade with time. Ours just got louder.",
       "To be continued… for a lifetime."
@@ -1084,7 +1084,7 @@ const voice = $("#voiceAudio");
   v.addEventListener("timeupdate", () => { if (v.currentTime > 20 && $("#trailerNext").hidden) show($("#trailerNext")); });
   v.addEventListener("ended", () => {
     screen.classList.remove("is-playing");
-    $("#trailerHint").textContent = "Coming to your life: 8 November 🎬";
+    $("#trailerHint").textContent = "Premiering on your birthday: 8 November 🎬";
     confetti(innerWidth / 2, innerHeight * 0.3, 160);
     musicOn();
   });
