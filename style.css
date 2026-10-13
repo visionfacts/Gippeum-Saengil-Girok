@@ -1413,3 +1413,27 @@ button,.keypad button,.frame,.star{touch-action:manipulation;-webkit-user-select
 /* Gujarati subtitles always in the Gujarati serif, whatever the scene's title font */
 [data-scene="story"] .cine-line.sub,
 [data-scene="story"] .cine-content:has(.f-type) .cine-line.sub{font-family:"Noto Serif Gujarati",var(--serif) !important;letter-spacing:normal;font-style:normal}
+
+/* Story subtitles: read at her own pace, "Next" unlocks after reading time */
+.sub-nav{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:2px}
+.sub-btn{
+  position:relative;overflow:hidden;min-width:44px;height:38px;padding:0 16px;border-radius:999px;
+  font-family:var(--serif);font-weight:700;font-size:1rem;color:var(--ink);
+  background:linear-gradient(180deg,#f3d38d,#c99a45);box-shadow:0 4px 12px rgba(0,0,0,.35);
+  transition:opacity .3s,transform .2s;
+}
+.sub-btn:disabled{cursor:default}
+.sub-prev{padding:0;width:38px;min-width:38px;font-size:1.4rem;line-height:1;color:var(--gold-soft);background:rgba(255,240,215,.1);box-shadow:inset 0 0 0 1px rgba(224,185,104,.5)}
+.sub-prev:disabled{opacity:.25}
+.sub-next.reading{color:rgba(42,10,14,.55);background:rgba(243,211,141,.28)}
+.sub-next.reading::after{          /* fills up while she reads */
+  content:"";position:absolute;inset:0;background:linear-gradient(180deg,#f3d38d,#c99a45);
+  transform-origin:left;transform:scaleX(0);animation:readFill var(--read,4s) linear forwards;z-index:-1;
+}
+.sub-next{z-index:0}
+.sub-next.ready:not(.done){animation:pulse 1.6s ease-in-out infinite}
+.sub-next.done{background:rgba(255,240,215,.15);color:var(--gold-soft);box-shadow:inset 0 0 0 1px rgba(224,185,104,.6)}
+@keyframes readFill{to{transform:scaleX(1)}}
+
+/* Shayari: "tap to begin" only works once it has been read */
+.prelude.waiting{cursor:default}
