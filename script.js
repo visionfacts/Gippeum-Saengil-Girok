@@ -359,7 +359,7 @@ beads.hidden = true;
   let typed = "", tries = 0, busy = false;
   const KEY = "khushali-22-unlocked";
   const unlockNow = () => { el.remove(); document.body.classList.remove("locked"); };
-  try { if (sessionStorage.getItem(KEY)) { unlockNow(); return; } } catch (e) {}
+  try { if (sessionStorage.getItem(KEY)) { unlockNow(); preludeGate(); return; } } catch (e) {}
   const paint = () => dots.forEach((d, i) => d.classList.toggle("on", i < typed.length));
   async function check() {
     busy = true;
@@ -375,7 +375,7 @@ beads.hidden = true;
       musicBtn.hidden = false;
       beads.hidden = false;
       musicOn();
-      goTo(sceneIndex("words"));
+      preludeGate();                 // shayari plays now; she can tap on only after reading it
       return;
     }
     tries++;
@@ -401,8 +401,15 @@ beads.hidden = true;
   });
 })();
 
-/* ---------- 0. prelude ---------- */
+/* ---------- 0. prelude (shayari): no skipping until it has been read ---------- */
+var preludeReady = false;   // var: the lock code above may call preludeGate() before this line runs
+function preludeGate() {
+  preludeReady = false;
+  $("#prelude").classList.add("waiting");
+  setTimeout(() => { preludeReady = true; $("#prelude").classList.remove("waiting"); }, 7600);
+}
 $("#prelude").addEventListener("click", () => {
+  if (!preludeReady) return;
   ctx();
   musicBtn.hidden = false;
   beads.hidden = false;
@@ -690,7 +697,7 @@ $("#introNext").addEventListener("click", next);
     t.style.animation = "none"; t.offsetWidth; t.style.animation = "";
     lines.innerHTML = ""; $("#cineTap").classList.remove("gone");
     lines.classList.toggle("subs", !!sc.subs);
-    if (sc.subs) { subAt = -1; timers.push(setTimeout(nextSub, 1300)); setNav(); return; }
+    if (sc.subs) { subAt = -1; timers.push(setTimeout(nextSub, 1300)); setNav(); return; }   // starts at paragraph 1
     let at = 1300;
     sc.lines.forEach((l, i) => {
       timers.push(setTimeout(() => { addLine(l); if (i === sc.lines.length - 1) done(); }, at));
@@ -701,38 +708,57 @@ $("#introNext").addEventListener("click", next);
   function setNav() {
     $$("i", dots).forEach((d, i) => d.classList.toggle("on", i === k));
     $("#storyPrev").disabled = k === 0;
-    $("#storyNextCh").disabled = k === S.length - 1;
+    $("#storyNextCh").disabled = k === S.length - 1 || locked();
+    $("#cineTap").hidden = !!S[k].subs;
   }
-  /* subtitle mode: one paragraph on screen at a time */
-  let subAt = -1;
-  function nextSub() {
-    clear();
-    const P = S[k].subs;
-    if (subAt >= P.length - 1) return;
-    subAt++;
+  /* subtitle mode: one paragraph at a time. No skipping: "Next" unlocks only after
+     enough time to read the paragraph, and the next scene unlocks only after the last one. */
+  let subAt = -1, gateT = 0;
+  const readDone = new Set();                  // scenes she has fully read (free to revisit)
+  const readMs = s => Math.min(14000, Math.max(3200, s.length * 55));
+  function showSub(n) {
+    clear(); clearTimeout(gateT);
+    const P = S[k].subs; subAt = n;
     lines.innerHTML = "";
     const p = document.createElement("p");
     p.className = "cine-line sub guj"; p.textContent = P[subAt];
-    const n = document.createElement("span");
-    n.className = "sub-count"; n.textContent = `${subAt + 1} / ${P.length}`;
-    lines.append(p, n);
+    const bar = document.createElement("div"); bar.className = "sub-nav";
+    const prev = document.createElement("button"); prev.className = "sub-btn sub-prev"; prev.innerHTML = "‹"; prev.setAttribute("aria-label", "Previous paragraph");
+    prev.disabled = subAt === 0;
+    const count = document.createElement("span"); count.className = "sub-count"; count.textContent = `${subAt + 1} / ${P.length}`;
+    const last = subAt === P.length - 1;
+    const nx = document.createElement("button"); nx.className = "sub-btn sub-next"; nx.innerHTML = last ? "✓" : "Next ›";
+    nx.setAttribute("aria-label", last ? "Finished reading" : "Next paragraph");
+    const wait = readDone.has(k) || subAt < (S[k]._max ?? -1) ? 0 : readMs(P[subAt]);
+    nx.style.setProperty("--read", wait + "ms");
+    nx.disabled = true;
+    if (wait) nx.classList.add("reading");
+    gateT = setTimeout(() => {
+      nx.disabled = last; nx.classList.remove("reading"); nx.classList.add("ready");
+      S[k]._max = Math.max(S[k]._max ?? -1, subAt);
+      if (last) { readDone.add(k); nx.classList.add("done"); done(); setNav(); }
+    }, wait);
+    prev.addEventListener("click", e => { e.stopPropagation(); if (subAt > 0) showSub(subAt - 1); });
+    nx.addEventListener("click", e => { e.stopPropagation(); if (!nx.disabled && !last) showSub(subAt + 1); });
+    bar.append(prev, count, nx);
+    lines.append(p, bar);
     requestAnimationFrame(() => p.classList.add("in"));
-    if (subAt === P.length - 1) { done(); return; }
-    const dur = Math.min(12000, Math.max(3800, P[subAt].length * 70));
-    timers.push(setTimeout(nextSub, dur));
+    setNav();
   }
+  function nextSub() { showSub(0); }
+  const locked = () => S[k].subs && !readDone.has(k);   // can't leave this scene forward yet
   function skip() {
-    if (S[k].subs) { if (subAt < S[k].subs.length - 1) nextSub(); return; }
+    if (S[k].subs) return;                      // paragraphs move only with the Next button
     if (!timers.length) return;
     clear(); lines.innerHTML = ""; S[k].lines.forEach(addLine); done();
   }
   $("#cinema").addEventListener("click", skip);
   $("#storyPrev").addEventListener("click", () => { if (k > 0) play(k - 1); });
-  $("#storyNextCh").addEventListener("click", () => { if (k < S.length - 1) play(k + 1); });
-  swipe($("#cinema"), dir => { const n = k + dir; if (n >= 0 && n < S.length) play(n); });
+  $("#storyNextCh").addEventListener("click", () => { if (k < S.length - 1 && !locked()) play(k + 1); });
+  swipe($("#cinema"), dir => { const n = k + dir; if (dir > 0 && locked()) return; if (n >= 0 && n < S.length) play(n); });
   $("#storyNext").addEventListener("click", next);
   onEnter.story = () => { if (!played) play(0); };
-  onLeave.story = () => { if (S[k].subs) clear(); else if (timers.length) skip(); };
+  onLeave.story = () => { clearTimeout(gateT); if (S[k].subs) clear(); else if (timers.length) skip(); };
 })();
 
 /* ---------- 4b. bestie license ---------- */
