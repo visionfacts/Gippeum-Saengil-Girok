@@ -1399,3 +1399,17 @@ button,.keypad button,.frame,.star{touch-action:manipulation;-webkit-user-select
 .lp-note b{color:var(--gold);font-size:1.15em}
 @media (max-height:700px){.lock-puzzle{padding:8px 12px 10px}.lp-sum{font-size:1.25rem}.lp-note{font-size:.92rem}}
 @media (max-height:700px){.lock-seal{display:none}.lock-inner{gap:8px}.keypad{gap:8px 18px}}
+
+/* Story scenes 2-3: subtitle mode, one paragraph at a time */
+.cine-lines.subs{gap:12px;align-items:center}
+.cine-line.sub{
+  font-style:normal;font-weight:500;
+  font-size:clamp(1rem,3.7vw,1.3rem);line-height:1.75;
+  max-width:30em;padding:10px 14px;border-radius:12px;
+  background:rgba(10,2,4,.42);
+  text-shadow:0 2px 10px rgba(0,0,0,.8);
+}
+.sub-count{font-family:var(--serif);font-size:.8rem;letter-spacing:.2em;color:var(--gold-soft);opacity:.8}
+/* Gujarati subtitles always in the Gujarati serif, whatever the scene's title font */
+[data-scene="story"] .cine-line.sub,
+[data-scene="story"] .cine-content:has(.f-type) .cine-line.sub{font-family:"Noto Serif Gujarati",var(--serif) !important;letter-spacing:normal;font-style:normal}
