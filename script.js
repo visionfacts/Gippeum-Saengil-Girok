@@ -10,8 +10,21 @@ const CONTENT = {
   // A reel of 22 photos that runs along a looping strip
   reel: Array.from({ length: 22 }, (_, i) => `images/reel${String(i + 1).padStart(2, "0")}.jpg`),
 
-  // Little titles on the five envelopes (same order as the letter pages)
-  letterTitles: ["Open me first", "My one prayer", "Your dreams", "About your Alien", "Open me last"],
+  // Little titles on the envelopes (same order as the letter pages)
+  letterTitles: ["Open me first", "My one prayer", "Your dreams", "About your Alien", "Always ours", "Open me last"],
+
+  // Extra letter, placed just before the last envelope
+  extraLetter: `Sometimes I wonder… if one day you look at me and simply say, “Drashti, no matter what happens, our friendship will always remain ours, right?” I think I might actually tear up.
+
+For me, friendship isn't just about laughing together, talking, or having fun. It's a bond where sometimes words fall short, conversations become less frequent, and misunderstandings happen, but the place we hold in each other's hearts never becomes any smaller.
+
+I don't know where life will take us, but Khushali, the moments I've spent with you will always be special to me.
+
+And yes, sometimes I overthink and get emotional over little things. But through it all, one thing will always remain true: you're one of those people I don't just want in my life today, but someone I hope stays a part of it for many, many years to come.
+
+Our friendship doesn't have to be perfect all the time. I just hope it always stays ours… real, genuine, and straight from the heart.
+
+Love you, Khushali. My bestie, my crazy girl, and a huge part of so many beautiful memories in my life. 🤍`,
 
   // Say cheese: the camera prints these, one per tap
   snaps: [
@@ -36,7 +49,7 @@ const CONTENT = {
     { title: "Fake-smile detector", img: "images/star3.jpg", text: "I can fool the whole world with a smile. Never you. Not even on a call." },
     { title: "Forever", img: "images/star4.jpg", text: "Some friendships fade with time. Ours just keeps getting louder." },
     { title: "Your laugh", img: "images/star5.jpg", text: "Still my favourite sound in the whole universe." },
-    { title: "2am talks", img: "images/star6.jpg", text: "Good news, bad days, random gossip. You are always the first one I tell." }
+    { title: "Random talks", img: "images/star6.jpg", text: "Good news, bad days, random gossip and our never-ending long calls. You are always the first one I tell." }
   ],
 
   balloons: [
@@ -68,21 +81,32 @@ const CONTENT = {
       "Then we ran into each other, I wished you a happy birthday…",
       "…and you looked at me like you had no idea who I was. 😂 Still my favourite beginning."
     ]},
-    { img: "images/scene2.jpg", pos: "50% 40%", font: "f-play", title: "The Alien", lines: [
-      { who: "Khushali", t: "“તું શું છો યાર! કંઈક અલગ જ છો… સાચે તું તો Alien જ છે!”" },
-      "Anyone else would have called it weird.",
-      "You turned it into the sweetest nickname I have ever had.",
-      "Because you love exactly the parts of me that don't fit anywhere else. 👽"
+    // Scenes 2 and 3 play like subtitles: one paragraph at a time, tap to go to the next
+    { img: "images/scene2.jpg", pos: "50% 40%", font: "f-play", title: "Your superpower", subs: [
+      "મેં તને એકવાર કીધું હતું ને કે તારી વાતો અને તારા મેસેજના રિપ્લાયમાંથી પણ મને ઘણું બધું શીખવા મળે છે. ત્યારે તેં મને પૂછ્યું હતું કે, “એવું તે કઈ રીતે?”",
+      "બસ, એનો જ એક જવાબ છે આ…",
+      "તારી એક વાત મેં નોટિસ કરી છે. તારી લાઇફમાં ગમે એટલી પ્રોબ્લેમ્સ ચાલતી હોય, પણ જ્યારે તારી નજીકની કોઈ વ્યક્તિ થોડી પણ અપસેટ હોય ને, ત્યારે તને કંઈક તો ખોટું છે એનો અહેસાસ થઈ જ જાય છે.",
+      "ક્યારેક એક મેસેજથી, તો ક્યારેક અવાજ પરથી જ તું સમજી જાય છે કે સામેવાળી વ્યક્તિના મનમાં કંઈક ચાલે છે.",
+      "અને પછી તું તારી પોતાની બધી વાતો થોડીવાર માટે સાઇડમાં મૂકીને એ વ્યક્તિને સાંભળવા અને એની પ્રોબ્લેમ સોલ્વ કરવામાં લાગી જાય છે.",
+      "મને તારી આ વાત બહુ ગમે છે, ખબર છે? કદાચ તારા માટે આ બહુ નાની વાત હશે, પણ મારી નજરમાં આ તારી બહુ સુંદર ખાસિયત છે.",
+      "તું તારી નજીકના લોકોને ફક્ત સાંભળતી નથી, પણ એમની વાતોને દિલથી સમજવાનો પ્રયત્ન પણ કરે છે."
     ]},
-    { img: "images/m09.jpg", font: "f-type", title: "Your superpower", lines: [
-      "I can fool the whole world with a smile.",
-      "Not you. Not even over a phone call.",
-      { who: "Khushali", t: "“Dati, આ તું fake ના હસજે! Life માં problem હોય તો મને કહે!”" },
-      "Some people listen to my words. You hear the ones I never say."
+    { img: "images/m09.jpg", font: "f-type", title: "Your turn to be heard", subs: [
+      "પણ ખુશાલી, આજે તને એક વાત કહેવી છે…",
+      "તું બધાની વાતો સમજે છે, બધાની ચિંતા કરે છે, બધાને હિંમત આપે છે… પણ ક્યારેક તારા મનમાં શું ચાલે છે એ પણ કોઈને કહેવું જોઈએ ને?",
+      "મને ખબર છે કે દરેક પ્રોબ્લેમનો સોલ્યુશન મારી પાસે નહીં હોય, અને કદાચ હું તારી બધી મુશ્કેલીઓ દૂર પણ નહીં કરી શકું. પણ તું તારા મનની વાત મારી સાથે શેર કરીશ તો કદાચ તારો ભાર થોડો હળવો થઈ જશે.",
+      "હું નથી ઇચ્છતી કે તું દરેક વખતે “ઝાંસીની રાણી” બનીને બધું જ એકલી સંભાળતી રહે.",
+      "ક્યારેક તું પણ થાકી શકે છે, ક્યારેક તને પણ કોઈની જરૂર પડી શકે છે, અને એમાં કંઈ ખોટું નથી.",
+      "અને પ્લીઝ, ક્યારેય એવું ન વિચારતી કે તું મને તારી પ્રોબ્લેમ્સ કહીશ તો હું શું કરી શકીશ? કદાચ હું તારી પ્રોબ્લેમ સોલ્વ ન કરી શકું, પણ તારી વાત સાંભળવા માટે તો હંમેશાં તૈયાર રહી શકું ને!",
+      "બસ, હું એટલું જ ઇચ્છું છું કે જે વ્યક્તિ બીજાઓને સમજવામાં આટલી સારી છે, એ ક્યારેક પોતાની જાતને પણ એટલી જ સમજવાનો મોકો આપે.",
+      "તું હંમેશાં બધાની સ્ટ્રોંગ ખુશાલી બનીને રહે એ જરૂરી નથી. મારી સામે તું જેવી છે એવી રહી શકે છે. તારે દરેક વખતે બધું ઠીક છે એવું બતાવવાની પણ જરૂર નથી.",
+      "ક્યારેક તું બોલજે, હું સાંભળીશ… ક્યારેક તું મૂંઝાયેલી હોઈશ, તો આપણે સાથે મળીને વિચારીશું.",
+      "કારણ કે બેસ્ટ ફ્રેન્ડ હોવાનો અર્થ દરેક પ્રોબ્લેમનો જવાબ આપવો નથી હોતો, ક્યારેક કોઈની વાત શાંતિથી સાંભળવી પણ પૂરતી હોય છે.",
+      "અને હા, મેડમ… બીજાની ચિંતા કરવાની સાથે થોડી પોતાની પણ કરી લેજે. તારી આ બેસ્ટી પણ અહીં જ છે, યાદ રાખજે! 🤍"
     ]},
     { img: "images/m12.jpg", font: "f-hand", title: "Still us", lines: [
       "Years later, you are still the first person I tell everything.",
-      "Good news, bad days, 2am thoughts, random gossip.",
+      "Good news, bad days, long calls, random gossip.",
       "Some friendships fade with time. Ours just got louder.",
       "To be continued… for a lifetime."
     ]}
@@ -665,16 +689,40 @@ $("#introNext").addEventListener("click", next);
     const t = $("#cineTitle"); t.className = "cine-title " + sc.font; t.textContent = sc.title;
     t.style.animation = "none"; t.offsetWidth; t.style.animation = "";
     lines.innerHTML = ""; $("#cineTap").classList.remove("gone");
+    lines.classList.toggle("subs", !!sc.subs);
+    if (sc.subs) { subAt = -1; timers.push(setTimeout(nextSub, 1300)); setNav(); return; }
     let at = 1300;
     sc.lines.forEach((l, i) => {
       timers.push(setTimeout(() => { addLine(l); if (i === sc.lines.length - 1) done(); }, at));
       at += typeof l === "string" ? 2300 : 3200;
     });
+    setNav();
+  }
+  function setNav() {
     $$("i", dots).forEach((d, i) => d.classList.toggle("on", i === k));
     $("#storyPrev").disabled = k === 0;
     $("#storyNextCh").disabled = k === S.length - 1;
   }
+  /* subtitle mode: one paragraph on screen at a time */
+  let subAt = -1;
+  function nextSub() {
+    clear();
+    const P = S[k].subs;
+    if (subAt >= P.length - 1) return;
+    subAt++;
+    lines.innerHTML = "";
+    const p = document.createElement("p");
+    p.className = "cine-line sub guj"; p.textContent = P[subAt];
+    const n = document.createElement("span");
+    n.className = "sub-count"; n.textContent = `${subAt + 1} / ${P.length}`;
+    lines.append(p, n);
+    requestAnimationFrame(() => p.classList.add("in"));
+    if (subAt === P.length - 1) { done(); return; }
+    const dur = Math.min(12000, Math.max(3800, P[subAt].length * 70));
+    timers.push(setTimeout(nextSub, dur));
+  }
   function skip() {
+    if (S[k].subs) { if (subAt < S[k].subs.length - 1) nextSub(); return; }
     if (!timers.length) return;
     clear(); lines.innerHTML = ""; S[k].lines.forEach(addLine); done();
   }
@@ -684,7 +732,7 @@ $("#introNext").addEventListener("click", next);
   swipe($("#cinema"), dir => { const n = k + dir; if (n >= 0 && n < S.length) play(n); });
   $("#storyNext").addEventListener("click", next);
   onEnter.story = () => { if (!played) play(0); };
-  onLeave.story = () => { if (timers.length) skip(); };
+  onLeave.story = () => { if (S[k].subs) clear(); else if (timers.length) skip(); };
 })();
 
 /* ---------- 4b. bestie license ---------- */
@@ -1102,6 +1150,7 @@ const voice = $("#voiceAudio");
     else if (i === parts.length - 1 && pages.length) pages[pages.length - 1] += "\n\n" + p; // wish + signature
     else pages.push(p);
   });
+  if (CONTENT.extraLetter) pages.splice(pages.length - 1, 0, CONTENT.extraLetter.trim());
   const TITLES = CONTENT.letterTitles || [];
   const read = new Set();
   let timer = 0, full = "", typing = false, lastBtn = null, done = false;
@@ -1109,7 +1158,7 @@ const voice = $("#voiceAudio");
   pages.forEach((_, i) => {
     const b = document.createElement("button");
     b.className = "envl";
-    b.style.setProperty("--tilt", `${[-3, 2, -1.5, 3, -2][i % 5]}deg`);
+    b.style.setProperty("--tilt", `${[-3, 2, -1.5, 3, -2, 1.5][i % 6]}deg`);
     b.setAttribute("aria-label", `Letter ${i + 1}: ${TITLES[i] || ""}`);
     b.innerHTML = `
       <span class="envl-paper">
@@ -1135,7 +1184,7 @@ const voice = $("#voiceAudio");
     if (reduceMotion) { render(str); finishType(); return; }
     const g = graphemes(str); let n = 0; typing = true; $("#ltmTap").hidden = false;
     const tick = () => {
-      n = Math.min(g.length, n + 1);
+      n = Math.min(g.length, n + Math.max(1, Math.ceil(g.length / 320)));
       render(g.slice(0, n).join(""));
       textEl.scrollTop = textEl.scrollHeight;
       if (n < g.length) timer = setTimeout(tick, 38); else finishType();
@@ -1150,6 +1199,7 @@ const voice = $("#voiceAudio");
     setTimeout(() => {
       $("#ltmLabel").textContent = `Letter ${i + 1} of ${pages.length}${TITLES[i] ? " · " + TITLES[i] : ""}`;
       modal.hidden = false; modal.classList.remove("in"); modal.offsetWidth; modal.classList.add("in");
+      textEl.classList.toggle("guj", /[\u0A80-\u0AFF]/.test(pages[i]));
       type(pages[i]);
       $("#ltmClose").focus({ preventScroll: true });
       if (!read.has(i)) { read.add(i); b.classList.add("is-read"); }
