@@ -10,21 +10,32 @@ const CONTENT = {
   // A reel of 22 photos that runs along a looping strip
   reel: Array.from({ length: 22 }, (_, i) => `images/reel${String(i + 1).padStart(2, "0")}.jpg`),
 
-  // Little titles on the envelopes (same order as the letter pages)
-  letterTitles: ["Open me first", "My one prayer", "Your dreams", "About your Alien", "Always ours", "Open me last"],
+  // The five envelopes, in order. Each one opens to its own little letter.
+  letters: [
+    { title: "Open me first", text:
+`Sometimes I wonder… if one day you look at me and simply say, “Drashti, no matter what happens, our friendship will always remain ours, right?”
 
-  // Extra letter, placed just before the last envelope
-  extraLetter: `Sometimes I wonder… if one day you look at me and simply say, “Drashti, no matter what happens, our friendship will always remain ours, right?” I think I might actually tear up.
+I think I might actually tear up.` },
+    { title: "What friendship means", text:
+`For me, friendship isn't just about laughing together, talking, or having fun.
 
-For me, friendship isn't just about laughing together, talking, or having fun. It's a bond where sometimes words fall short, conversations become less frequent, and misunderstandings happen, but the place we hold in each other's hearts never becomes any smaller.
+It's a bond where sometimes words fall short, conversations become less frequent, and misunderstandings happen… but the place we hold in each other's hearts never becomes any smaller.` },
+    { title: "Many years to come", text:
+`I don't know where life will take us, but Khushali, the moments I've spent with you will always be special to me.
 
-I don't know where life will take us, but Khushali, the moments I've spent with you will always be special to me.
+And yes, sometimes I overthink and get emotional over little things. But through it all, one thing will always remain true: you're one of those people I don't just want in my life today, but someone I hope stays a part of it for many, many years to come.` },
+    { title: "Always ours", text:
+`Our friendship doesn't have to be perfect all the time. I just hope it always stays ours… real, genuine, and straight from the heart.
 
-And yes, sometimes I overthink and get emotional over little things. But through it all, one thing will always remain true: you're one of those people I don't just want in my life today, but someone I hope stays a part of it for many, many years to come.
+Love you, Khushali. My bestie, my crazy girl, and a huge part of so many beautiful memories in my life. 🤍` },
+    { title: "Open me last", text:
+`Happy 22nd Birthday, Khushali 🤍
 
-Our friendship doesn't have to be perfect all the time. I just hope it always stays ours… real, genuine, and straight from the heart.
+1314k8, endlessly. ♾️
 
-Love you, Khushali. My bestie, my crazy girl, and a huge part of so many beautiful memories in my life. 🤍`,
+હંમેશાં તારી સાથે,
+Dati (તારી Alien 👽)` }
+  ],
 
   // Say cheese: the camera prints these, one per tap
   snaps: [
@@ -55,7 +66,7 @@ Love you, Khushali. My bestie, my crazy girl, and a huge part of so many beautif
   balloons: [
     "22 already looks so good on you ✨",
     "Still my favourite notification 📱",
-    "Partner in every crazy plan 😂",
+    "Plans that won't happen? Still planning 😂",
     "Your Alien, always on your team 👽"
   ],
 
@@ -87,7 +98,7 @@ Love you, Khushali. My bestie, my crazy girl, and a huge part of so many beautif
       "બસ, એનો જ એક જવાબ છે આ…",
       "તારી એક વાત મેં નોટિસ કરી છે. તારી લાઇફમાં ગમે એટલી પ્રોબ્લેમ્સ ચાલતી હોય, પણ જ્યારે તારી નજીકની કોઈ વ્યક્તિ થોડી પણ અપસેટ હોય ને, ત્યારે તને કંઈક તો ખોટું છે એનો અહેસાસ થઈ જ જાય છે.",
       "ક્યારેક એક મેસેજથી, તો ક્યારેક અવાજ પરથી જ તું સમજી જાય છે કે સામેવાળી વ્યક્તિના મનમાં કંઈક ચાલે છે.",
-      "અને પછી તું તારી પોતાની બધી વાતો થોડીવાર માટે સાઇડમાં મૂકીને એ વ્યક્તિને સાંભળવા અને એની પ્રોબ્લેમ સોલ્વ કરવામાં લાગી જાય છે.",
+      "અને પછી તું તારી પોતાની બધી પ્રોબ્લેમ્સ થોડીવાર માટે સાઇડમાં મૂકીને એ વ્યક્તિને સાંભળવા અને એની પ્રોબ્લેમ સોલ્વ કરવામાં લાગી જાય છે.",
       "મને તારી આ વાત બહુ ગમે છે, ખબર છે? કદાચ તારા માટે આ બહુ નાની વાત હશે, પણ મારી નજરમાં આ તારી બહુ સુંદર ખાસિયત છે.",
       "તું તારી નજીકના લોકોને ફક્ત સાંભળતી નથી, પણ એમની વાતોને દિલથી સમજવાનો પ્રયત્ન પણ કરે છે."
     ]},
@@ -114,23 +125,7 @@ Love you, Khushali. My bestie, my crazy girl, and a huge part of so many beautif
 
   // Record a voice note, name it voice.mp3 and put it in the audio folder.
   // If the file isn't there, the voice step is skipped automatically.
-  voiceFile: "audio/voice.mp3",
-
-  letter:
-`પ્રિય ખુશાલી (મારી Darling),
-
-ખુશાલી, મને ખબર છે કે લાઈફ ક્યારેય સરળ નથી હોતી… આજે પણ નથી અને કદાચ આવતીકાલે પણ સહેલી નહીં હોય. દરેક વળાંક પર પોતાની નવી મુશ્કેલીઓ અને પડકારો હોય જ છે.
-
-પણ આ જન્મદિવસે ભગવાનને મારી માત્ર એક જ પ્રાર્થના છે: તું જે પણ ઈચ્છે છે, જે સપના તું જુએ છે, તે બધું જ તને યોગ્ય સમયે મળે.
-
-તારા જીવનમાં તેં જે પણ પ્લાન બનાવ્યા હોય, તે બધા જ સપના કોઈ પણ પસ્તાવા વગર પૂરા થાય. તું હસતી રહે, ખુશ રહે, અને તારી દરેક મંઝિલ તને તારા હકની ખુશીઓ સાથે મળે.
-
-અને હા… તું મને પ્રેમથી Alien કહે છે ને? સાચું કહું તો એ મારું સૌથી ગમતું નામ છે. અને તારી આ Alien, Dati, હંમેશાં તારી સાથે જ ઊભી રહેશે. દરેક સમયે, દરેક વાતમાં.
-
-Happy 22nd Birthday, Khushali 🤍
-
-હંમેશાં તારી સાથે,
-Dati (તારી Alien 👽)`
+  voiceFile: "audio/voice.mp3"
 };
 
 /* ---------- helpers ---------- */
@@ -709,6 +704,7 @@ $("#introNext").addEventListener("click", next);
     $$("i", dots).forEach((d, i) => d.classList.toggle("on", i === k));
     $("#storyPrev").disabled = k === 0;
     $("#storyNextCh").disabled = k === S.length - 1 || locked();
+    if (locked() || !S[k].subs) $("#storyNextCh").classList.remove("nudge");
     $("#cineTap").hidden = !!S[k].subs;
   }
   /* subtitle mode: one paragraph at a time. No skipping: "Next" unlocks only after
@@ -733,13 +729,26 @@ $("#introNext").addEventListener("click", next);
     nx.style.setProperty("--read", wait + "ms");
     nx.disabled = true;
     if (wait) nx.classList.add("reading");
+    const hasNextScene = k < S.length - 1;
     gateT = setTimeout(() => {
-      nx.disabled = last; nx.classList.remove("reading"); nx.classList.add("ready");
+      nx.disabled = false; nx.classList.remove("reading"); nx.classList.add("ready");
       S[k]._max = Math.max(S[k]._max ?? -1, subAt);
-      if (last) { readDone.add(k); nx.classList.add("done"); done(); setNav(); }
+      if (last) {
+        readDone.add(k); done(); setNav();
+        // finished: the button itself takes her to the next scene, and the arrow below lights up
+        nx.innerHTML = hasNextScene ? "Next scene ›" : "✓";
+        nx.setAttribute("aria-label", hasNextScene ? "Go to the next scene" : "Finished");
+        nx.classList.add("finish");
+        if (hasNextScene) $("#storyNextCh").classList.add("nudge");
+      }
     }, wait);
     prev.addEventListener("click", e => { e.stopPropagation(); if (subAt > 0) showSub(subAt - 1); });
-    nx.addEventListener("click", e => { e.stopPropagation(); if (!nx.disabled && !last) showSub(subAt + 1); });
+    nx.addEventListener("click", e => {
+      e.stopPropagation();
+      if (nx.disabled) return;
+      if (!last) showSub(subAt + 1);
+      else if (hasNextScene) play(k + 1);
+    });
     bar.append(prev, count, nx);
     lines.append(p, bar);
     requestAnimationFrame(() => p.classList.add("in"));
@@ -1009,48 +1018,65 @@ const voice = $("#voiceAudio");
 /* ---------- 6. main character moments: photos drifting through space ---------- */
 (function moments() {
   const orbit = $("#orbit"), modal = $("#mview"), sc = scenes[sceneIndex("moments")];
-  const P = CONTENT.photos, NEAR = -150, FAR = 1700;
+  // Flying through a field of photos, like drifting in zero gravity. Scroll / swipe to fly faster or back.
+  const P = CONTENT.photos, NEAR = -520, FAR = 2600, SPAN = FAR - NEAR, CRUISE = 150;
   let W = 0, H = 0, items = [], running = false, paused = false, last = 0, k = 0, seen = new Set(), shownNext = false;
+  let vel = CRUISE, push = 0;
+  const canHover = matchMedia("(hover: hover)").matches;
   const rnd = (a, b) => a + Math.random() * (b - a);
-  function place(it, far) {
+  function place(it, z) {
     let x, y;
-    do { x = rnd(-0.62, 0.62) * W; y = rnd(-0.42, 0.42) * H; } while (Math.abs(x) < W * 0.12 && Math.abs(y) < H * 0.1);
-    Object.assign(it, { x, y, z: far ? FAR : rnd(NEAR + 300, FAR), r: rnd(-14, 14), ry: rnd(-25, 25), vr: rnd(-4, 4), vy: rnd(-6, 6) });
+    do { x = rnd(-1, 1) * W * 0.95; y = rnd(-1, 1) * H * 0.95; } while (Math.abs(x) < W * 0.14 && Math.abs(y) < H * 0.12);
+    Object.assign(it, { x, y, z, r: rnd(-18, 18), ry: rnd(-30, 30), rx: rnd(-15, 15),
+                        vr: rnd(-10, 10), vry: rnd(-8, 8), dx: rnd(-14, 14), dy: rnd(-10, 10) });
   }
   function build() {
     W = orbit.clientWidth; H = orbit.clientHeight;
-    items = P.map((p, i) => {
+    const copies = innerWidth < 600 ? 2 : 3;                         // a fuller sky
+    const list = Array.from({ length: P.length * copies }, (_, n) => n % P.length);
+    items = list.map((i, n) => {
       const b = document.createElement("button");
       b.className = "floater";
-      b.setAttribute("aria-label", `Open photo ${i + 1}: ${p.caption}`);
-      b.innerHTML = `<img src="${p.src}" alt="" draggable="false" loading="lazy"><span>${p.caption}</span>`;
+      b.setAttribute("aria-label", `Open photo ${i + 1}: ${P[i].caption}`);
+      b.innerHTML = `<img src="${P[i].src}" alt="" draggable="false" loading="lazy"><span>${P[i].caption}</span>`;
       b.addEventListener("click", () => open(i));
       orbit.appendChild(b);
       const it = { el: b, i };
-      place(it, false);
-      it.z = NEAR + 250 + (i / P.length) * (FAR - NEAR - 250);         // spread them out in depth
+      place(it, NEAR + 200 + ((n * 0.618) % 1) * (SPAN - 200));      // spread evenly through the depth
       return it;
     });
   }
   function draw() {
     for (const it of items) {
-      const near = Math.min(1, (it.z - NEAR) / 260), far = Math.min(1, (FAR - it.z) / 300);
+      const near = Math.min(1, (it.z - NEAR) / 420), far = Math.min(1, (FAR - it.z) / 500);
       it.el.style.opacity = Math.max(0, Math.min(near, far));
-      it.el.style.transform = `translate3d(${it.x}px, ${it.y}px, ${-it.z}px) rotateY(${it.ry}deg) rotateZ(${it.r}deg)`;
+      it.el.style.transform = `translate3d(${it.x}px, ${it.y}px, ${-it.z}px) rotateX(${it.rx}deg) rotateY(${it.ry}deg) rotateZ(${it.r}deg)`;
       it.el.style.zIndex = Math.round(FAR - it.z);
     }
   }
   function frame(now) {
     if (!running) return;
     const dt = Math.min(50, now - (last || now)) / 1000; last = now;
-    if (!paused) for (const it of items) {
-      if (it.el.matches(":hover")) continue;                      // hovered photo waits for you
-      it.z -= dt * 70; it.r += dt * it.vr; it.y += dt * it.vy;
-      if (it.z < NEAR) place(it, true);
+    // scroll/swipe adds a push that fades out; otherwise we cruise forward
+    push *= Math.pow(0.12, dt);
+    vel += ((paused ? 0 : CRUISE + push) - vel) * Math.min(1, dt * 4);
+    for (const it of items) {
+      if (canHover && it.el.matches(":hover")) continue;             // the photo under the mouse waits for you
+      it.z -= dt * vel;
+      it.r += dt * it.vr; it.ry += dt * it.vry;                         // slow tumbling, zero gravity
+      it.x += dt * it.dx; it.y += dt * it.dy;
+      if (it.z < NEAR) place(it, it.z + SPAN);                          // passed us: back to the far end
+      else if (it.z > FAR) place(it, it.z - SPAN);                      // flying backwards
     }
-    draw(); twinkle(now);
+    draw(); twinkle(now, dt);
     requestAnimationFrame(frame);
   }
+  const boost = d => { if (modal.hidden) push = Math.max(-1400, Math.min(2600, push + d)); };
+  sc.addEventListener("wheel", e => { e.preventDefault(); boost(e.deltaY * 6); }, { passive: false });
+  let ty = null;
+  orbit.addEventListener("touchstart", e => { ty = e.touches[0].clientY; }, { passive: true });
+  orbit.addEventListener("touchmove", e => { if (ty == null) return; const y = e.touches[0].clientY; boost((ty - y) * 14); ty = y; }, { passive: true });
+  orbit.addEventListener("touchend", () => { ty = null; });
   function open(i) {
     k = i; paused = true; ctx(); sfxPop();
     seen.add(i);
@@ -1074,18 +1100,27 @@ const voice = $("#voiceAudio");
   });
   $("#momentsNext").addEventListener("click", next);
 
-  /* deep-space stars */
+  /* deep-space stars that stream past at the same speed as the photos */
   const cv = $("#cosmosStars"), c = cv.getContext("2d");
   let dots = [], dpr = 1;
   function sizeStars() {
     dpr = Math.min(devicePixelRatio || 1, 2);
     cv.width = cv.offsetWidth * dpr; cv.height = cv.offsetHeight * dpr;
-    dots = Array.from({ length: innerWidth < 600 ? 160 : 320 }, () => ({ x: Math.random() * cv.width, y: Math.random() * cv.height,
-      r: (Math.random() < 0.08 ? 1.6 : 0.8) * dpr, t: Math.random() * 6, v: 0.6 + Math.random() * 2 }));
+    dots = Array.from({ length: innerWidth < 600 ? 220 : 420 }, () => ({ x: rnd(-1, 1), y: rnd(-1, 1), z: rnd(0.05, 1), t: rnd(0, 6) }));
   }
-  function twinkle(now) {
-    c.clearRect(0, 0, cv.width, cv.height);
-    for (const d of dots) { c.globalAlpha = 0.35 + 0.65 * Math.abs(Math.sin(d.t + now / 1000 * d.v * 0.5)); c.fillStyle = "#e9efff"; c.fillRect(d.x, d.y, d.r, d.r); }
+  function twinkle(now, dt = 0) {
+    const w = cv.width, h = cv.height, cx = w / 2, cy = h / 2, f = Math.max(w, h) * 0.5;
+    c.clearRect(0, 0, w, h);
+    for (const d of dots) {
+      d.z -= dt * vel / 3200;
+      if (d.z < 0.04) { d.z += 1; d.x = rnd(-1, 1); d.y = rnd(-1, 1); }
+      if (d.z > 1) { d.z -= 1; }
+      const px = cx + d.x * f / d.z * 0.35, py = cy + d.y * f / d.z * 0.35;
+      if (px < 0 || px > w || py < 0 || py > h) continue;
+      const r = Math.max(0.6, 1.8 * (1 - d.z)) * dpr;
+      c.globalAlpha = Math.min(1, (1 - d.z) * 1.4) * (0.6 + 0.4 * Math.abs(Math.sin(d.t + now / 700)));
+      c.fillStyle = "#e9efff"; c.fillRect(px, py, r, r);
+    }
     c.globalAlpha = 1;
   }
   addEventListener("resize", () => { if (!running) return; W = orbit.clientWidth; H = orbit.clientHeight; sizeStars(); });
@@ -1169,15 +1204,8 @@ const voice = $("#voiceAudio");
 /* ---------- 8. letter: five little envelopes ---------- */
 (function letters() {
   const box = $("#envs"), modal = $("#ltm"), textEl = $("#ltmText"), count = $("#ltCount");
-  const parts = CONTENT.letter.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
-  const pages = [];
-  parts.forEach((p, i) => {
-    if (i === 1) pages[0] += "\n\n" + p;           // greeting + first paragraph
-    else if (i === parts.length - 1 && pages.length) pages[pages.length - 1] += "\n\n" + p; // wish + signature
-    else pages.push(p);
-  });
-  if (CONTENT.extraLetter) pages.splice(pages.length - 1, 0, CONTENT.extraLetter.trim());
-  const TITLES = CONTENT.letterTitles || [];
+  const pages = CONTENT.letters.map(l => l.text.trim());
+  const TITLES = CONTENT.letters.map(l => l.title);
   const read = new Set();
   let timer = 0, full = "", typing = false, lastBtn = null, done = false;
 
