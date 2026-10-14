@@ -1361,7 +1361,7 @@ button,.keypad button,.frame,.star{touch-action:manipulation;-webkit-user-select
 .floater img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:2px;pointer-events:none}
 .floater span{display:block;padding:5px 2px 7px;font-family:var(--hand);font-size:clamp(.7rem,2.6vw,.9rem);line-height:1.05;color:#3a2a2a;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.floater:hover,.floater:focus-visible{box-shadow:0 0 0 2px #8ff7e8,0 0 26px 6px rgba(62,230,208,.7),0 10px 24px rgba(0,0,0,.55);outline:none}
+.floater:focus-visible{box-shadow:0 0 0 2px #8ff7e8,0 0 26px 6px rgba(62,230,208,.7),0 10px 24px rgba(0,0,0,.55);outline:none}
 .moments-head{position:relative;z-index:2;pointer-events:none;display:flex;flex-direction:column;align-items:center}
 .moments-head .title{text-shadow:0 2px 16px rgba(0,0,0,.7)}
 .moments-next{position:relative;z-index:2}
@@ -1437,3 +1437,12 @@ button,.keypad button,.frame,.star{touch-action:manipulation;-webkit-user-select
 
 /* Shayari: "tap to begin" only works once it has been read */
 .prelude.waiting{cursor:default}
+/* when a subtitle scene is finished: highlight the way forward */
+.sub-next.finish{padding:0 18px;animation:pulse 1.6s ease-in-out infinite}
+#storyNextCh.nudge{
+  color:var(--ink);background:linear-gradient(180deg,#f3d38d,#c99a45);border-color:transparent;
+  box-shadow:0 0 0 4px rgba(243,211,141,.25),0 0 22px rgba(243,211,141,.65);
+  animation:pulse 1.6s ease-in-out infinite;
+}
+
+@media (hover:hover){.floater:hover{box-shadow:0 0 0 2px #8ff7e8,0 0 26px 6px rgba(62,230,208,.7),0 10px 24px rgba(0,0,0,.55);outline:none}}
