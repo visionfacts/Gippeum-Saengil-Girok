@@ -860,7 +860,7 @@ body::after{
 /* =========================================================
    Letter v2: night sky with floating lanterns, paged letter
    ========================================================= */
-[data-scene="letter"]{overflow:hidden}
+[data-scene="letter"]{overflow-x:hidden;overflow-y:auto}
 .night{
   position:absolute;inset:0;z-index:-1;pointer-events:none;
   background:
@@ -982,7 +982,7 @@ body.locked .prelude-tap{animation-play-state:paused}
 /* =========================================================
    The Alien's star map
    ========================================================= */
-[data-scene="stars"]{overflow:hidden}
+[data-scene="stars"]{overflow-x:hidden;overflow-y:auto}
 .space{
   position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden;
   background:
