@@ -133,7 +133,11 @@ const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const wait = ms => new Promise(r => setTimeout(r, ms));
-const show = el => { el.hidden = false; el.style.animation = "none"; el.offsetHeight; el.style.animation = ""; };
+const show = el => {
+  el.hidden = false; el.style.animation = "none"; el.offsetHeight; el.style.animation = "";
+  // on small phones the button can land below the fold: bring it into view
+  setTimeout(() => { const r = el.getBoundingClientRect(); if (r.bottom > innerHeight - 30 || r.top < 0) el.scrollIntoView({ behavior: "smooth", block: "center" }); }, 120);
+};
 const fmt = s => isFinite(s) ? `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}` : "0:00";
 
 /* ---------- sound effects (no files needed) ---------- */
