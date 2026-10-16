@@ -93,28 +93,34 @@ Dati (તારી Alien 👽)` }
       "…and you looked at me like you had no idea who I was. 😂 Still my favourite beginning."
     ]},
     // Scenes 2 and 3 play like subtitles: one paragraph at a time, tap to go to the next
-    { img: "images/scene2.jpg", pos: "50% 40%", font: "f-play", title: "Your superpower", subs: [
-      "મેં તને એકવાર કીધું હતું ને કે તારી વાતો અને તારા મેસેજના રિપ્લાયમાંથી પણ મને ઘણું બધું શીખવા મળે છે. ત્યારે તેં મને પૂછ્યું હતું કે, “એવું તે કઈ રીતે?”",
-      "બસ, એનો જ એક જવાબ છે આ…",
-      "તારી એક વાત મેં નોટિસ કરી છે. તારી લાઇફમાં ગમે એટલી પ્રોબ્લેમ્સ ચાલતી હોય, પણ જ્યારે તારી નજીકની કોઈ વ્યક્તિ થોડી પણ અપસેટ હોય ને, ત્યારે તને કંઈક તો ખોટું છે એનો અહેસાસ થઈ જ જાય છે.",
-      "ક્યારેક એક મેસેજથી, તો ક્યારેક અવાજ પરથી જ તું સમજી જાય છે કે સામેવાળી વ્યક્તિના મનમાં કંઈક ચાલે છે.",
-      "અને પછી તું તારી પોતાની બધી પ્રોબ્લેમ્સ થોડીવાર માટે સાઇડમાં મૂકીને એ વ્યક્તિને સાંભળવા અને એની પ્રોબ્લેમ સોલ્વ કરવામાં લાગી જાય છે.",
-      "મને તારી આ વાત બહુ ગમે છે, ખબર છે? કદાચ તારા માટે આ બહુ નાની વાત હશે, પણ મારી નજરમાં આ તારી બહુ સુંદર ખાસિયત છે.",
-      "તું તારી નજીકના લોકોને ફક્ત સાંભળતી નથી, પણ એમની વાતોને દિલથી સમજવાનો પ્રયત્ન પણ કરે છે."
-    ]},
-    { img: "images/m09.jpg", font: "f-type", title: "Your turn to be heard", subs: [
-      "પણ ખુશાલી, આજે તને એક વાત કહેવી છે…",
-      "તું બધાની વાતો સમજે છે, બધાની ચિંતા કરે છે, બધાને હિંમત આપે છે… પણ ક્યારેક તારા મનમાં શું ચાલે છે એ પણ કોઈને કહેવું જોઈએ ને?",
-      "મને ખબર છે કે દરેક પ્રોબ્લેમનો સોલ્યુશન મારી પાસે નહીં હોય, અને કદાચ હું તારી બધી મુશ્કેલીઓ દૂર પણ નહીં કરી શકું. પણ તું તારા મનની વાત મારી સાથે શેર કરીશ તો કદાચ તારો ભાર થોડો હળવો થઈ જશે.",
-      "હું નથી ઇચ્છતી કે તું દરેક વખતે “ઝાંસીની રાણી” બનીને બધું જ એકલી સંભાળતી રહે.",
-      "ક્યારેક તું પણ થાકી શકે છે, ક્યારેક તને પણ કોઈની જરૂર પડી શકે છે, અને એમાં કંઈ ખોટું નથી.",
-      "અને પ્લીઝ, ક્યારેય એવું ન વિચારતી કે તું મને તારી પ્રોબ્લેમ્સ કહીશ તો હું શું કરી શકીશ? કદાચ હું તારી પ્રોબ્લેમ સોલ્વ ન કરી શકું, પણ તારી વાત સાંભળવા માટે તો હંમેશાં તૈયાર રહી શકું ને!",
-      "બસ, હું એટલું જ ઇચ્છું છું કે જે વ્યક્તિ બીજાઓને સમજવામાં આટલી સારી છે, એ ક્યારેક પોતાની જાતને પણ એટલી જ સમજવાનો મોકો આપે.",
-      "તું હંમેશાં બધાની સ્ટ્રોંગ ખુશાલી બનીને રહે એ જરૂરી નથી. મારી સામે તું જેવી છે એવી રહી શકે છે. તારે દરેક વખતે બધું ઠીક છે એવું બતાવવાની પણ જરૂર નથી.",
-      "ક્યારેક તું બોલજે, હું સાંભળીશ… ક્યારેક તું મૂંઝાયેલી હોઈશ, તો આપણે સાથે મળીને વિચારીશું.",
-      "કારણ કે બેસ્ટ ફ્રેન્ડ હોવાનો અર્થ દરેક પ્રોબ્લેમનો જવાબ આપવો નથી હોતો, ક્યારેક કોઈની વાત શાંતિથી સાંભળવી પણ પૂરતી હોય છે.",
-      "અને હા, મેડમ… બીજાની ચિંતા કરવાની સાથે થોડી પોતાની પણ કરી લેજે. તારી આ બેસ્ટી પણ અહીં જ છે, યાદ રાખજે! 🤍"
-    ]},
+    { img: "images/s2-01.jpg", font: "f-play", title: "Without even realising",
+      // one background photo per page: it changes with every "Next"
+      subImgs: ["images/s2-01.jpg", "images/s2-02.jpg", "images/s2-03.jpg", "images/s2-04.jpg", "images/s2-05.jpg", "images/s2-06.jpg", "images/s2-07.jpg"],
+      subs: [
+              "Khushali, 🥹❤️\n\nYou know, sometimes I wonder how one person can become such a beautiful part of someone's life without even realizing it.\n\nAnd then I think of you.",
+              "I don't know if you realise this, but some of my favourite feelings are connected to you. The random conversations, the silly little moments, the things that would mean nothing to anyone else but somehow mean so much to me.",
+              "And if there's one thing I wish for us, it's that we never become the kind of friends who need a reason to talk, a special occasion to make each other smile, or perfect words to show that we matter.",
+              "I want random surprises, unexpected little memories, laughing over the stupidest things, and those moments when we look back someday and think, \"God, we really had something beautiful.\"",
+              "Because for me, it's never been about how often we talk or how many messages we exchange.",
+              "It's about the fact that, among so many people in this world, you became *my Khushali.*",
+              "And honestly, there's something I've never quite known how to put into words...\n\nMaybe I'll tell you on the next page. ♡"
+      ] },
+    { img: "images/s3-01.jpg", font: "f-play", title: "What I never want you to forget",
+      // one background photo per page: it changes with every "Next"
+      subImgs: ["images/s3-01.jpg", "images/s3-02.jpg", "images/s3-03.jpg", "images/s3-04.jpg", "images/s3-05.jpg", "images/s3-06.jpg", "images/s3-07.jpg", "images/s3-08.jpg", "images/s3-09.jpg", "images/s3-10.jpg", "images/s3-11.jpg"],
+      subs: [
+              "And this is what I never want you to forget...\n\nMy Khushali, my favourite person. 🫂❤️\n\nMaybe the words I've been looking for are actually very simple.",
+              "Out of all the people I could have met, all the stories I could have been a part of, I'm just really, really glad that one of those stories has you in it.",
+              "I don't want a friendship that has to be proved every day. I don't want us to count replies, measure love through attention, or feel guilty when life gets in the way.",
+              "I just want *us* — the real, imperfect, silly, beautiful us.\n\nThe kind where we can surprise each other for no reason, laugh about things nobody else understands, go through different phases of life, and still have a little corner of our hearts that feels familiar when we find our way back to each other.",
+              "And Khushali, if someday life gets so busy that we don't talk the way we do now, I hope you'll remember that you were never just another person I happened to know.",
+              "You became someone whose presence made certain moments of my life more beautiful.",
+              "I can't promise that every day will be the same, or that life will always go according to our wishes. But I'll always be grateful that, in this huge world, I got to know *you.*",
+              "And if you ever wonder what makes you so special to me, it's not one particular thing you've done.\n\nIt's simply you. The person you are. The memories we share. The happiness of knowing that somewhere in this world, there's a person I get to call my best friend.",
+              "**I don't need you to be anything more than my Khushali. And I don't need our friendship to be anything more than something real.** 🥹🩷",
+              "One day, I hope we look back at all of this, laugh at our old conversations, remember our little surprises, and realise that even the simplest moments became some of our favourite memories.",
+              "And if you ask me what my favourite part of this whole story is...\n\nIt will always be the fact that I got to share a little piece of my life with you.\n\nNot because I expected anything from you.\nNot because you had to do anything for me.\n\nBut because, out of all the people in this world, **you're the one I get to call my Khushali.** ♡\n\nAnd that's a little happiness I'll always be thankful for. 🤍"
+      ] },
     { img: "images/m12.jpg", font: "f-hand", title: "Still us", lines: [
       "Years later, you are still the first person I tell everything.",
       "Good news, bad days, long calls, random gossip.",
@@ -686,16 +692,28 @@ $("#introNext").addEventListener("click", next);
     $("#cineTap").classList.add("gone");
     if (k === S.length - 1 && !seenAll) { seenAll = true; show($("#storyNext")); }
   }
+  let bgNow = "";
+  function setBg(src, pos) {                    // cross-fade the scene's background photo
+    if (!src || src === bgNow) return;
+    bgNow = src;
+    const back = imgs[1 - front]; back.src = src; back.style.objectPosition = pos || "50% 30%";
+    $("#cineBlur").style.backgroundImage = `url("${src}")`;
+    back.classList.remove("on"); back.offsetWidth; back.classList.add("on");
+    imgs[front].classList.remove("on"); front = 1 - front;
+  }
+  // *italic* and **bold** from the script, line breaks kept
+  const esc = s => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const fmtText = s => esc(s).replace(/\*\*(.+?)\*\*/gs, "<strong>$1</strong>").replace(/\*(.+?)\*/gs, "<em>$1</em>").replace(/\n/g, "<br>");
   function play(n) {
     clear(); k = n; played = true;
     const sc = S[k];
-    const back = imgs[1 - front]; back.src = sc.img; back.style.objectPosition = sc.pos || "50% 30%"; $("#cineBlur").style.backgroundImage = `url("${sc.img}")`; back.classList.remove("on"); back.offsetWidth; back.classList.add("on");
-    imgs[front].classList.remove("on"); front = 1 - front;
+    setBg(sc.subImgs ? sc.subImgs[0] : sc.img, sc.pos);
     $("#cineLabel").textContent = `Scene ${k + 1}`;
     const t = $("#cineTitle"); t.className = "cine-title " + sc.font; t.textContent = sc.title;
     t.style.animation = "none"; t.offsetWidth; t.style.animation = "";
     lines.innerHTML = ""; $("#cineTap").classList.remove("gone");
     lines.classList.toggle("subs", !!sc.subs);
+    $("#cinema").classList.toggle("subs-mode", !!sc.subs);   // taller frame, scrollable text, so "Next" is always reachable
     if (sc.subs) { subAt = -1; timers.push(setTimeout(nextSub, 1300)); setNav(); return; }   // starts at paragraph 1
     let at = 1300;
     sc.lines.forEach((l, i) => {
@@ -721,7 +739,9 @@ $("#introNext").addEventListener("click", next);
     const P = S[k].subs; subAt = n;
     lines.innerHTML = "";
     const p = document.createElement("p");
-    p.className = "cine-line sub guj"; p.textContent = P[subAt];
+    const gu = /[\u0A80-\u0AFF]/.test(P[subAt]);
+    p.className = "cine-line sub" + (gu ? " guj" : " en"); p.innerHTML = fmtText(P[subAt]);
+    if (S[k].subImgs) setBg(S[k].subImgs[subAt % S[k].subImgs.length], S[k].pos);
     const bar = document.createElement("div"); bar.className = "sub-nav";
     const prev = document.createElement("button"); prev.className = "sub-btn sub-prev"; prev.innerHTML = "‹"; prev.setAttribute("aria-label", "Previous paragraph");
     prev.disabled = subAt === 0;
