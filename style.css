@@ -1446,3 +1446,26 @@ button,.keypad button,.frame,.star{touch-action:manipulation;-webkit-user-select
 }
 
 @media (hover:hover){.floater:hover{box-shadow:0 0 0 2px #8ff7e8,0 0 26px 6px rgba(62,230,208,.7),0 10px 24px rgba(0,0,0,.55);outline:none}}
+/* English subtitle pages (scenes 2 and 3) */
+[data-scene="story"] .cine-line.sub.en,
+[data-scene="story"] .cine-content:has(.f-type) .cine-line.sub.en{
+  font-family:var(--serif) !important;font-style:italic;font-weight:500;letter-spacing:.005em;
+  font-size:clamp(1.08rem,3.9vw,1.4rem);line-height:1.6;
+}
+.cine-line.sub em{font-style:italic;color:#ffd99a}
+.cine-line.sub strong{font-weight:700;color:#fff3cf}
+.cine-line.sub.en em{font-style:normal}
+/* each page brings its own photo: keep it soft and slow */
+[data-scene="story"] .cine-bg img{transition:opacity 1.1s ease}
+/* Subtitle scenes: taller frame; long pages scroll inside the box so "Next" never hides */
+.cinema.subs-mode{height:min(76vh,640px)}
+.cinema.subs-mode .cine-content{justify-content:center;min-height:0;padding-top:12px;padding-bottom:12px}
+.cinema.subs-mode .cine-title{font-size:clamp(1.45rem,5.6vw,2.4rem);margin-bottom:2px}
+.cinema.subs-mode .cine-lines.subs{flex:0 1 auto;min-height:0;max-height:100%;width:100%;align-items:center}
+.cinema.subs-mode .cine-line.sub{flex:0 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;scrollbar-color:rgba(243,211,141,.5) transparent}
+.cinema.subs-mode .sub-nav{flex:none}
+.cinema.subs-mode .cine-bar{height:5%}
+.cinema.subs-mode .cine-content{inset:5% 0}
+/* the movie frame must never be scrolled sideways by focus/scroll-into-view */
+.cinema{overflow:hidden;overflow:clip}
